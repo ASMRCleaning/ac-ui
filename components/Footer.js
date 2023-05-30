@@ -1,12 +1,19 @@
 import React from "react";
-import { Container, Navbar } from "react-bootstrap";
+import { Container, Navbar, Row, Col } from "react-bootstrap";
 
 const Footer = () => {
     return (
         <>
             <Navbar bg="dark" variant="dark" expand="lg" fixed="bottom">
                 <Container>
-                    <Navbar.Text> @Copyright 2023 - PRJ666 Group 7</Navbar.Text>
+                    <Navbar.Text>ASMR Cleaning Service</Navbar.Text>
+                </Container>
+                <Container>
+                    <Row>
+                        <Col>
+                        Oi
+                        </Col>
+                    </Row>
                 </Container>
             </Navbar>
         </>
