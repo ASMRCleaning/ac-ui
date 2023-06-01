@@ -3681,7 +3681,7 @@ fieldset:disabled .btn {
   display: block;
 }
 .navbar {
-  --bs-navbar-padding-x: 0;
+  --bs-navbar-padding-x: 2rem;
   --bs-navbar-padding-y: 0.5rem;
   --bs-navbar-color: #7b8ab8;
   --bs-navbar-hover-color: #485785;
@@ -3708,9 +3708,37 @@ fieldset:disabled .btn {
   justify-content: space-between;
   padding: var(--bs-navbar-padding-y) var(--bs-navbar-padding-x);
 }
+.navbar-footer{
+  --bs-navbar-padding-x: 1rem;
+  --bs-navbar-padding-y: 0.1rem;
+  --bs-navbar-color: #7b8ab8;
+  --bs-navbar-hover-color: #485785;
+  --bs-navbar-disabled-color: #adb6d3;
+  --bs-navbar-active-color: #485785;
+  --bs-navbar-brand-padding-y: 0.2rem;
+  --bs-navbar-brand-margin-end: 1rem;
+  --bs-navbar-brand-font-size: 1.5rem;
+  --bs-navbar-brand-color: #485785;
+  --bs-navbar-brand-hover-color: #485785;
+  --bs-navbar-nav-link-padding-x: 0.5rem;
+  --bs-navbar-toggler-padding-y: 0.25rem;
+  --bs-navbar-toggler-padding-x: 0.75rem;
+  --bs-navbar-toggler-font-size: 1.25rem;
+  --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%237b8ab8' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  --bs-navbar-toggler-border-color: rgba(0, 0, 0, 0.1);
+  --bs-navbar-toggler-border-radius: 50rem;
+  --bs-navbar-toggler-focus-width: 0.25rem;
+  --bs-navbar-toggler-transition: box-shadow 0.15s ease-in-out;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--bs-navbar-padding-y) var(--bs-navbar-padding-x);  
+}
 .navbar > .container,
 .navbar > .container-fluid,
-.navbar > .container-lg,
+.navbar > .container-lg,l
 .navbar > .container-md,
 .navbar > .container-sm,
 .navbar > .container-xl,
@@ -11236,4 +11264,25 @@ fieldset:disabled .btn {
 }
 .list-group-item {
   background-color: transparent;
+}
+.react-icons {
+  vertical-align: middle;
+  padding: 25px 50px;
+}
+footer {
+  margin: 2px;
+  position: fixed;
+  background-color: #378dfc;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px;
+  text-align: center;
+  color: white;
+}
+a.social {
+  margin: 0 0.5rem;
+}
+a.facebook, a.youtube, a.instagram{
+  color: #f0f5fa;
 }
