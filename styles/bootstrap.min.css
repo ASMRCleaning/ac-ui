@@ -11271,7 +11271,7 @@ fieldset:disabled .btn {
 }
 footer {
   margin: 2px;
-  position: fixed;
+  /* position: fixed; */
   background-color: #378dfc;
   bottom: 0;
   left: 0;
@@ -11285,4 +11285,7 @@ a.social {
 }
 a.facebook, a.youtube, a.instagram{
   color: #f0f5fa;
+}
+.homepage-content {
+  margin-bottom: 100px;
 }
