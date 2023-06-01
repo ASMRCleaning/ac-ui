@@ -1,43 +1,54 @@
 import React from "react";
-import { Container, Navbar, Nav, Col, Form, Button } from 'react-bootstrap';
-import Link from 'next/link';
+import { Container, Navbar, Nav, Form, Button } from 'react-bootstrap';
+
 
 const Header = () => {
     return (
         <>
-            <Navbar bg="dark" variant="dark">
-                <Container>
+            <Navbar className="navbar navbar-expand-lg navbar-dark bg-primary">
+                <Nav className="container-fluid">
                     <Navbar.Brand href="/">
-                        <img
-                            alt="Logo"
-                            src="/black-logo.jpg"
-                            width="30"
-                            height="30"
-                            className="d-inline-block align-top"
-                        />{'            '}
-                        ASMR Cleaning Service
+                        {/* <img alt="Logo" src="/logo-company.jpg" width="30" height="30" className="d-inline-block align-top" /> */}
+                        {' '}ASMR Cleaning Service
                     </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="me-auto">
-                            <Nav.Link href="/">Home</Nav.Link>
-                            <Nav.Link href="/about">About</Nav.Link>
-                            <Nav.Link href="/service">Service</Nav.Link>
-                            &nbsp;
-                            <Form className="d-flex">
-                                <Form.Control
-                                    type="search"
-                                    placeholder="Search"
-                                    className="me-2"
-                                    aria-label="Search"
-                                />
-                                <Button variant="btn btn-primary">Search</Button>
-                            </Form>
-                            <Nav.Link href="#link">Login/ Sign up</Nav.Link>
+                    <Navbar.Toggle aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" />
+                    <Navbar.Collapse id="navbarColor01">
+                        <Nav className="navbar-nav me-auto">
+                            <Nav.Item>
+                                <Nav.Link href="/about">About</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link href="/service">Service</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link href="/service">Contact us</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link href="/service">Login</Nav.Link>
+                            </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
-                </Container>
-            </Navbar>
+                    {/* </Nav.Item> */}
+                    &nbsp;
+                    <Nav.Item>
+                        <Container className="d-grid gap-1">
+                            <Button className="btn btn-outline-success">Get a free quote here</Button>
+                        </Container>
+                    </Nav.Item>
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                    &nbsp;
+                        <Form className="d-flex">
+                            <Form.Control className="form-control me-sm-2"
+                                type="search"
+                                placeholder="Search"
+                            />
+                            <Button className="btn btn-secondary my-2 my-sm-0">Search</Button>
+                        </Form>
+                </Nav>
+            </Navbar >
         </>
     );
 }
