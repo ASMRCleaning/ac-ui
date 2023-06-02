@@ -24,7 +24,7 @@ const Header = () => {
                                 <Nav.Link href="/service">Contact us</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="/service">Login</Nav.Link>
+                                <Nav.Link href="/login">Login</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
