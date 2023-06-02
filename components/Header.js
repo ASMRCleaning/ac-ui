@@ -33,7 +33,7 @@ const Header = () => {
                                 <Nav.Link href="/contactUs">Contact us</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="/loginPage">Login</Nav.Link>
+                                <Nav.Link href="/login">Login</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
