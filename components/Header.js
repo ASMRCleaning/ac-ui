@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Navbar, Nav, Form, Button } from 'react-bootstrap';
+import { Container, Navbar, Nav, Form, Button, NavDropdown } from 'react-bootstrap';
 
 
 const Header = () => {
@@ -21,13 +21,19 @@ const Header = () => {
                                 <Nav.Link href="/about">About</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="/service">Service</Nav.Link>
+                                <NavDropdown title="Services" id="basic-nav-dropdown">
+                                    <NavDropdown.Item href="/service#house-cleaning">House Cleaning</NavDropdown.Item>
+                                    <NavDropdown.Item href="/service#movein-cleaning"> Move-in Cleaning</NavDropdown.Item>
+                                    <NavDropdown.Item href="/service#moveout-cleaning"> Move out Cleaning</NavDropdown.Item>
+                                    <NavDropdown.Item href="/service#green-cleaning"> Green Cleaning</NavDropdown.Item>
+                                    <NavDropdown.Item href="/service"> All Service</NavDropdown.Item>
+                                    </NavDropdown>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="/service">Contact us</Nav.Link>
+                                <Nav.Link href="/contactUs">Contact us</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="/service">Login</Nav.Link>
+                                <Nav.Link href="/loginPage">Login</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
