@@ -1,21 +1,19 @@
 import React from "react";
 import { Container, Row, Col, Card, Button, CardGroup } from "react-bootstrap";
 
-const HomePage = () => {
+const MainCard = (props) => {
   return (
     <>
       <div className="homepage-content">
         <Card className="mb-3" style={{ width: "100%" }}>
           <Card.Header>
-            <h3 style={{ textAlign: "center", fontSize: "3.5rem" }}>
-              House Cleaning Services: Toronto and GTA
+            <h3 style={{ textAlign: "center", fontSize: "2.5rem" }}>
+              {props.title}
             </h3>
           </Card.Header>
           <Card.Body>
-            <p style={{ fontSize: "1.8rem", textAlign: "center" }}>
-              Award-winning eco-friendly house cleaning service & Maid service
-              in Toronto where your satisfaction is guaranteed! <br />
-              We use only natural cleaning products for all home cleaning services.
+            <p style={{ fontSize: "1.5rem", textAlign: "center" }}>
+             {props.body}
             </p>
           </Card.Body>
           <Container fluid>
@@ -23,8 +21,8 @@ const HomePage = () => {
             <Col>
               <div style={{ position: "relative", paddingTop: "50.25%" }}>
                 <img
-                  src="/cleaning-homepage.jpg"
-                  alt="Cleaning Services"
+                  src={props.src}
+                  alt={props.alt}
                   style={{
                     position: "absolute",
                     top: 0,
@@ -61,4 +59,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage
+export default MainCard

@@ -8,13 +8,14 @@ const About =() =>{
             <br />
             <Card bg="light">
                 <Card.Body><h2>Add company information on it</h2>qwerty</Card.Body>
+                <br />
+                <br />
             </Card>
             <br />
             <br />
             <br />
-            <Card bg="light">
-                <Card.Body><h2>Company contact</h2>email: asmr@asmr <br/> telephone: (123)456-7890</Card.Body>
-            </Card>
+            <br />
+            <br />
             <br />
             <br />
             <br />
@@ -23,6 +24,10 @@ const About =() =>{
                 <Button variant="secondary">Meet our Team</Button>{' '}
                 </Card.Body>
             </Card>
+            <br />
+            <br />
+            <br />
+
         </>
     );
 }
