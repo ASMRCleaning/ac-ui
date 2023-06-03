@@ -22,11 +22,11 @@ const Header = () => {
                             </Nav.Item>
                             <Nav.Item>
                                 <NavDropdown title="Services" id="basic-nav-dropdown">
+                                <NavDropdown.Item href="/service"> All Service</NavDropdown.Item>
                                     <NavDropdown.Item href="/service#house-cleaning">House Cleaning</NavDropdown.Item>
                                     <NavDropdown.Item href="/service#movein-cleaning"> Move-in Cleaning</NavDropdown.Item>
                                     <NavDropdown.Item href="/service#moveout-cleaning"> Move out Cleaning</NavDropdown.Item>
                                     <NavDropdown.Item href="/service#green-cleaning"> Green Cleaning</NavDropdown.Item>
-                                    <NavDropdown.Item href="/service"> All Service</NavDropdown.Item>
                                     </NavDropdown>
                             </Nav.Item>
                             <Nav.Item>
