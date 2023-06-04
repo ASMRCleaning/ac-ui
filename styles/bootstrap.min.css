@@ -11279,11 +11279,17 @@ footer {
   padding: 8px;
   text-align: center;
   color: white;
-  z-index: 1000;
+  z-index: 1;
 }
 a.social {
   margin: 0 0.5rem;
 }
 a.facebook, a.youtube, a.instagram{
   color: #f0f5fa;
+}
+.homepage-content {
+  margin-bottom: 100px;
+}
+a.email, a.phone{
+  color: #378dfc;
 }

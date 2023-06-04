@@ -1,47 +1,78 @@
-import React from "react";
+import { React, useState } from "react";
 import { Container, Navbar, Nav, Form, Button, NavDropdown } from 'react-bootstrap';
+import { readToken, removeToken } from "../lib/authenticate";
+import { useRouter } from "next/router";
 
+const Header = (props) => {
+    const router = useRouter();
+    let token = readToken()
+    const [userName, setUserName] = useState()
 
-const Header = () => {
+    function logout() {
+        removeToken();
+        router.push("/");
+    }
+
+    function registerUser(){
+        
+    }
     return (
         <>
             <Navbar className="navbar navbar-expand-lg navbar-dark bg-primary">
                 <Nav className="container-fluid">
                     <Navbar.Brand href="/">
-                        {/* <img alt="Logo" src="/logo-company.jpg" width="30" height="30" className="d-inline-block align-top" /> {' '}*/}
                         ASMR Cleaning Service
                     </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" />
+                    <Navbar.Toggle aria-controls="navbarColor01"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation" />
                     <Navbar.Collapse id="navbarColor01">
                         <Nav className="navbar-nav me-auto">
                             <Nav.Item>
                                 <Nav.Link href="/">Home</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="/about">About</Nav.Link>
+                                <NavDropdown title="About" id="basic-nav-dropdown">
+                                    <NavDropdown.Item href="/about"> About Us</NavDropdown.Item>
+                                    <NavDropdown.Item href="https://blog.nationwide.com/home/home-maintenance/how-to-clean-house-fast/">Blog</NavDropdown.Item>
+                                    <NavDropdown.Item href="https://www.goodhousekeeping.com/home/cleaning/g2550/best-cleaning-tips/">
+                                        Cleaning Tips</NavDropdown.Item>
+                                    <NavDropdown.Item href="https://www.bhg.com/homekeeping/house-cleaning/tips/eco-friendly-cleaning-ideas/">
+                                        Green Cleaning</NavDropdown.Item>
+                                </NavDropdown>
                             </Nav.Item>
                             <Nav.Item>
                                 <NavDropdown title="Services" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="/service"> All Service</NavDropdown.Item>
+                                    <NavDropdown.Item href="/service"> All Service</NavDropdown.Item>
                                     <NavDropdown.Item href="/service#house-cleaning">House Cleaning</NavDropdown.Item>
                                     <NavDropdown.Item href="/service#movein-cleaning"> Move-in Cleaning</NavDropdown.Item>
                                     <NavDropdown.Item href="/service#moveout-cleaning"> Move out Cleaning</NavDropdown.Item>
                                     <NavDropdown.Item href="/service#green-cleaning"> Green Cleaning</NavDropdown.Item>
-                                    </NavDropdown>
+                                </NavDropdown>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link href="/contactUs">Contact us</Nav.Link>
                             </Nav.Item>
+                            <Nav.Item className="ml-auto">
+                                {!token ? <Nav.Link href="/login">Login</Nav.Link> :
+                                    <Nav.Item >
+                                    <NavDropdown title="Services" id="basic-nav-dropdown">
+                                        <NavDropdown.Item href="/service"> Hi, {userName}</NavDropdown.Item>
+                                        <NavDropdown.Item href="/service#house-cleaning">Profile</NavDropdown.Item>
+                                        <NavDropdown.Item href="/service#movein-cleaning"> Booking</NavDropdown.Item>
+                                        <NavDropdown.Item onClick={logout}> Logout</NavDropdown.Item>
+                                    </NavDropdown>
+                                </Nav.Item>}
+                            </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="/login">Login</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
-                    <Nav.Item>
+                    {/* <Nav.Item>
                         <Container className="d-grid gap-1">
                             <Button className="btn btn-outline-success">Get a free quote here</Button>
                         </Container>
-                    </Nav.Item>
+                    </Nav.Item> */}
                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                     <Form className="d-flex">
                         <Form.Control className="form-control me-sm-2"
