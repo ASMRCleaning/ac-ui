@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { Button } from "react-bootstrap";
 
 export default function questionnaire() {
   const {
@@ -430,7 +431,9 @@ export default function questionnaire() {
         <br />
         <br />
       </fieldset>
-      <button type="submit">Submit</button>
+      <Button variant="primary" className="pull-right" type="submit">
+        Submit
+      </Button>
     </form>
-  );  
+  );
 }
