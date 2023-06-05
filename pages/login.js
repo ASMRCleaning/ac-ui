@@ -11,10 +11,11 @@ export default function Login(props) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    console.log(`TODO: Submit form with: ${user}/ ${password}`)
 
     try {
       await authenticateUser(user, password);
-      router.push("/vehicles");
+      router.push("/userHome");
     } catch (err) {
       setWarning(err.message);
     }
@@ -27,7 +28,7 @@ export default function Login(props) {
         <Card.Body>
           <h2>Login</h2>
           <br />
-          Enter your user ID and password information to access and manage
+          Enter your user ID and password
         </Card.Body>
       </Card>
       <br />

@@ -1,11 +1,10 @@
 import React from "react";
-import { Container, Row, Col, Card, Button, CardGroup } from "react-bootstrap";
+import { Container, Card, Button, Row, Col } from "react-bootstrap";
 
 const MainCard = (props) => {
   return (
     <>
-      <div className="homepage-content">
-        <Card className="mb-3" style={{ width: "100%" }}>
+      <Card className="col-lg-12" style={{ width: "100%" }}>
           <Card.Header>
             <h3 style={{ textAlign: "center", fontSize: "2.5rem" }}>
               {props.title}
@@ -54,8 +53,6 @@ const MainCard = (props) => {
           </Row>
         </Container>
         </Card>
-        
-      </div>
     </>
   );
 };

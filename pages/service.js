@@ -12,6 +12,7 @@ const Service = () => {
                 src="/office-cleaning-service.jpg"
                 alt="Office Cleaning service"
             />
+            <br/>
             <Container className="fluid">
                 <Row>
                     <Card id="house-cleaning">
