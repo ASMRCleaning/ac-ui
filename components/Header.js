@@ -39,7 +39,7 @@ const Header = () => {
                     </Navbar.Collapse>
                     <Nav.Item>
                         <Container className="d-grid gap-1">
-                            <Button className="btn btn-outline-success">Get a free quote here</Button>
+                            <Button className="btn btn-outline-success" href="/questionnaire">Get a free quote here</Button>
                         </Container>
                     </Nav.Item>
                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
