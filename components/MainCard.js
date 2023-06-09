@@ -41,9 +41,9 @@ const MainCard = (props) => {
                   }}
                 >
                   <Button
+                    href="/questionnaire"
                     variant="outline-success"
                     style={{ fontSize: "2.5rem", padding: "1rem 2rem" }}
-                     href="/questionnaire"
                   >
                     Get a free quote here
                   </Button>
