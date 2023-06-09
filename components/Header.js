@@ -1,21 +1,18 @@
-import { React, useState } from "react";
-import { Container, Navbar, Nav, Form, Button, NavDropdown } from 'react-bootstrap';
-import { readToken, removeToken } from "../lib/authenticate";
+import React from "react";
+import { Navbar, Nav, Form, Button, NavDropdown } from 'react-bootstrap';
+import { isAuthenticated, removeToken } from "../lib/authenticate";
 import { useRouter } from "next/router";
 
 const Header = (props) => {
     const router = useRouter();
-    let token = readToken()
-    const [userName, setUserName] = useState()
+
+    // let token = readToken()
 
     function logout() {
         removeToken();
         router.push("/");
     }
 
-    function registerUser(){
-        
-    }
     return (
         <>
             <Navbar className="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -54,8 +51,9 @@ const Header = (props) => {
                                 <Nav.Link href="/contactUs">Contact us</Nav.Link>
                             </Nav.Item>
                             <Nav.Item className="ml-auto">
-                                {!token ? <Nav.Link href="/login">Login</Nav.Link> :
+                                {!isAuthenticated() ? <Nav.Link href="/login">Login</Nav.Link> :
                                     <Nav.Item >
+                                       <p> Hi </p>
                                     <NavDropdown title="Services" id="basic-nav-dropdown">
                                         <NavDropdown.Item href="/service"> Hi, {userName}</NavDropdown.Item>
                                         <NavDropdown.Item href="/service#house-cleaning">Profile</NavDropdown.Item>
