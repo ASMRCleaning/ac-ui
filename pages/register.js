@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useRouter } from 'next/router';
 import { registerUser } from "../lib/authenticate";
 import { Form, Row, Button, Card, Alert } from "react-bootstrap";
+import { useRouter } from "next/router";
 
 const RegisterPage = () => {
     const [user, setUser] = useState('');
@@ -47,7 +47,7 @@ const RegisterPage = () => {
             <Form onSubmit={submitForm} className="container mt-3 mb-3">
                 <Row className="mb-9">
                     <Form.Group className="col col-sm-9">
-                        <Form.Label>User</Form.Label>
+                        <Form.Label>Email</Form.Label>
                         <Form.Control type="text"
                             id="user"
                             name="user"
