@@ -10,13 +10,15 @@
   },
   "dependencies": {
     "bootstrap": "^5.2.3",
+    "jotai": "^2.1.1",
     "jwt-decode": "^3.1.2",
     "next": "13.4.4",
     "react": "18.2.0",
     "react-bootstrap": "^2.7.4",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.44.3",
-    "react-icons": "^4.9.0"
+    "react-icons": "^4.9.0",
+    "swr": "^2.1.5"
   },
   "devDependencies": {
     "eslint": "8.41.0",
