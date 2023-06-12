@@ -3,6 +3,7 @@ import { Navbar, Nav, Form, Button, NavDropdown } from 'react-bootstrap';
 import { isAuthenticated, removeToken } from "../lib/authenticate";
 import { useRouter } from "next/router";
 
+
 const Header = (props) => {
     const router = useRouter();
 
@@ -54,8 +55,13 @@ const Header = (props) => {
                                 {!isAuthenticated() ? <Nav.Link href="/login">Login</Nav.Link> :
                                     <Nav.Item >
                                     <NavDropdown title="Hi Customer" id="basic-nav-dropdown">
-                                        <NavDropdown.Item href="/profile"> Profile</NavDropdown.Item>
-                                        <NavDropdown.Item href="/residence">Residences</NavDropdown.Item>
+
+
+                                        <NavDropdown.Item href="/userHome"> User Home Page</NavDropdown.Item>
+                                        <NavDropdown.Item href="/userHome"> Profile</NavDropdown.Item>
+                                        <NavDropdown.Item href="/residence">Residence</NavDropdown.Item>
+                                        <NavDropdown.Item href="/residenceAddress">Address</NavDropdown.Item>
+
                                         <NavDropdown.Item href="/booking"> Booking</NavDropdown.Item>
                                         <NavDropdown.Item onClick={logout}> Logout</NavDropdown.Item>
                                     </NavDropdown>
