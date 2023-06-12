@@ -53,11 +53,10 @@ const Header = (props) => {
                             <Nav.Item className="ml-auto">
                                 {!isAuthenticated() ? <Nav.Link href="/login">Login</Nav.Link> :
                                     <Nav.Item >
-                                       <p> Hi </p>
-                                    <NavDropdown title="Services" id="basic-nav-dropdown">
-                                        <NavDropdown.Item href="/service"> Hi, {userName}</NavDropdown.Item>
-                                        <NavDropdown.Item href="/service#house-cleaning">Profile</NavDropdown.Item>
-                                        <NavDropdown.Item href="/service#movein-cleaning"> Booking</NavDropdown.Item>
+                                    <NavDropdown title="Hi Customer" id="basic-nav-dropdown">
+                                        <NavDropdown.Item href="/profile"> Profile</NavDropdown.Item>
+                                        <NavDropdown.Item href="/residence">Residences</NavDropdown.Item>
+                                        <NavDropdown.Item href="/booking"> Booking</NavDropdown.Item>
                                         <NavDropdown.Item onClick={logout}> Logout</NavDropdown.Item>
                                     </NavDropdown>
                                 </Nav.Item>}
