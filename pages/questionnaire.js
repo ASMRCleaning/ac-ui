@@ -431,8 +431,8 @@ export default function questionnaire() {
         <br />
         <br />
       </fieldset>
-      <Button variant="primary" className="pull-right" type="submit">
-        Submit
+      <Button href="/residenceAddress" variant="primary" className="pull-right" type="submit">
+        Next
       </Button>
     </form>
   );

@@ -56,7 +56,7 @@ const Header = (props) => {
                                     <Nav.Item >
                                     <NavDropdown title="Hi Customer" id="basic-nav-dropdown">
                                         <NavDropdown.Item href="/userHome"> User Home Page</NavDropdown.Item>
-                                        <NavDropdown.Item href="/userHome"> Profile</NavDropdown.Item>
+                                        <NavDropdown.Item href="/profile"> Profile</NavDropdown.Item>
                                         <NavDropdown.Item href="/residence">Residence</NavDropdown.Item>
                                         <NavDropdown.Item href="/residenceAddress">Address</NavDropdown.Item>
                                         <NavDropdown.Item href="/booking"> Booking</NavDropdown.Item>
