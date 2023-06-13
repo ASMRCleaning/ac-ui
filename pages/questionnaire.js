@@ -1,17 +1,50 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "react-bootstrap";
+import { questionnaireForm } from "../lib/questionnaire";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+
 
 export default function questionnaire() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, setValue } = useForm({
+    defaultValues: {
+      houseType: "",
+      size: "",
+      empty: "",
+      furnished: "",
+      pet: "",
+      bedrooms: "",
+      bath: "",
+      dens: "",
+      frequency: "",
+    },
+  });
 
-  const onSubmit = (data) => {
+  useEffect(() => {
+    let data = {
+      houseType: "",
+      size: "",
+      empty: "",
+      furnished: "",
+      pet: "",
+      bedrooms: "",
+      bath: "",
+      dens: "",
+      frequency: "",
+    };
+
+    // set the values of each form field to match "data"
+
+    for (const prop in data) {
+      setValue(prop, data[prop]);
+    }
+  }, []);
+
+  function onSubmit(data) {
     console.log(data);
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -24,39 +57,39 @@ export default function questionnaire() {
           <p>
             <strong>What is your House Type?</strong>
           </p>
-          <label className="form-check-label" for="Question1">
+          <label className="form-check-label" for="houseType">
             <input
-              {...register("Question1")}
+              {...register("houseType")}
               className="form-check-input"
               type="radio"
-              name="Question1"
-              id="Question1"
+              name="houseType"
+              id="houseType"
               value="Apartment"
             />
             Apartment
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question1">
+          <label className="form-check-label" for="houseType">
             <input
-              {...register("Question1")}
+              {...register("houseType")}
               className="form-check-input"
               type="radio"
-              name="Question1"
-              id="Question1"
+              name="houseType"
+              id="houseType"
               value="Condo"
             />
             Condo
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question1">
+          <label className="form-check-label" for="houseType">
             <input
-              {...register("Question1")}
+              {...register("houseType")}
               className="form-check-input"
               type="radio"
-              name="Question1"
-              id="Question1"
+              name="houseType"
+              id="houseType"
               value="House"
             />
             House
@@ -73,9 +106,9 @@ export default function questionnaire() {
           <div className="form-group">
             <label for="exampleTextarea" className="form-input-lable-2"></label>
             <textarea
-              {...register("Question2")}
+              {...register("size")}
               className="form-control"
-              id="exampleTextarea1"
+              id="size"
               rows="1"
             ></textarea>
           </div>
@@ -88,26 +121,26 @@ export default function questionnaire() {
           <p>
             <strong>Empty or Occupied?</strong>
           </p>
-          <label className="form-check-label" for="Question3">
+          <label className="form-check-label" for="empty">
             <input
-              {...register("Question3")}
+              {...register("empty")}
               className="form-check-input"
               type="radio"
-              name="Question3"
-              id="Question3"
+              name="empty"
+              id="empty"
               value="Empty"
             />
             Empty
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question3">
+          <label className="form-check-label" for="empty">
             <input
-              {...register("Question3")}
+              {...register("empty")}
               className="form-check-input"
               type="radio"
-              name="Question3"
-              id="Question3"
+              name="empty"
+              id="empty"
               value="Occupied"
             />
             Occupied
@@ -121,26 +154,26 @@ export default function questionnaire() {
           <p>
             <strong>Is it furnished?</strong>
           </p>
-          <label className="form-check-label" for="Question4">
+          <label className="form-check-label" for="furnished">
             <input
-              {...register("Question4")}
+              {...register("furnished")}
               className="form-check-input"
               type="radio"
-              name="Question4"
-              id="Question4"
+              name="furnished"
+              id="furnished"
               value="Yes"
             />
             Yes
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question4">
+          <label className="form-check-label" for="furnished">
             <input
-              {...register("Question4")}
+              {...register("furnished")}
               className="form-check-input"
               type="radio"
-              name="Question4"
-              id="Question4"
+              name="furnished"
+              id="furnished"
               value="No"
             />
             No
@@ -152,46 +185,28 @@ export default function questionnaire() {
 
         <div className="form-check">
           <p>
-            <strong>How many people are there in the household?</strong>
-          </p>
-          <div className="form-group">
-            <label for="exampleTextarea" className="form-input-lable-2"></label>
-            <textarea
-              {...register("Question5")}
-              className="form-control"
-              id="exampleTextarea2"
-              rows="1"
-            ></textarea>
-          </div>
-        </div>
-
-        <br />
-        <br />
-
-        <div className="form-check">
-          <p>
             <strong>Do you have any Pets?</strong>
           </p>
-          <label className="form-check-label" for="Question6">
+          <label className="form-check-label" for="pet">
             <input
-              {...register("Question6")}
+              {...register("pet")}
               className="form-check-input"
               type="radio"
-              name="Question6"
-              id="Question6"
+              name="pet"
+              id="pet"
               value="Yes"
             />
             Yes
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question6">
+          <label className="form-check-label" for="pet">
             <input
-              {...register("Question6")}
+              {...register("pet")}
               className="form-check-input"
               type="radio"
-              name="Question6"
-              id="Question6"
+              name="pet"
+              id="pet"
               value="No"
             />
             No
@@ -205,39 +220,39 @@ export default function questionnaire() {
           <p>
             <strong>How many bedrooms do you have?</strong>
           </p>
-          <label className="form-check-label" for="Question7">
+          <label className="form-check-label" for="bedrooms">
             <input
-              {...register("Question7")}
+              {...register("bedrooms")}
               className="form-check-input"
               type="radio"
-              name="Question7"
-              id="Question7"
+              name="bedrooms"
+              id="bedrooms"
               value="1~5"
             />
             1~5
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question7">
+          <label className="form-check-label" for="bedrooms">
             <input
-              {...register("Question7")}
+              {...register("bedrooms")}
               className="form-check-input"
               type="radio"
-              name="Question7"
-              id="Question7"
+              name="bedrooms"
+              id="bedrooms"
               value="6~10"
             />
             6~10
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question7">
+          <label className="form-check-label" for="bedrooms">
             <input
-              {...register("Question7")}
+              {...register("bedrooms")}
               className="form-check-input"
               type="radio"
-              name="Question7"
-              id="Question7"
+              name="bedrooms"
+              id="bedrooms"
               value="11~15"
             />
             11~15
@@ -251,39 +266,39 @@ export default function questionnaire() {
           <p>
             <strong>How many bathrooms do you have?</strong>
           </p>
-          <label className="form-check-label" for="Question8">
+          <label className="form-check-label" for="bath">
             <input
-              {...register("Question8")}
+              {...register("bath")}
               className="form-check-input"
               type="radio"
-              name="Question8"
-              id="Question8"
+              name="bath"
+              id="bath"
               value="1~3"
             />
             1~3
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question8">
+          <label className="form-check-label" for="bath">
             <input
-              {...register("Question8")}
+              {...register("bath")}
               className="form-check-input"
               type="radio"
-              name="Question8"
-              id="Question8"
+              name="bath"
+              id="bath"
               value="4~6"
             />
             4~6
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question8">
+          <label className="form-check-label" for="bath">
             <input
-              {...register("Question8")}
+              {...register("bath")}
               className="form-check-input"
               type="radio"
-              name="Question8"
-              id="Question8"
+              name="bath"
+              id="bath"
               value="7~9"
             />
             7~9
@@ -297,39 +312,39 @@ export default function questionnaire() {
           <p>
             <strong>How many dens or small offices do you have?</strong>
           </p>
-          <label className="form-check-label" for="Question9">
+          <label className="form-check-label" for="dens">
             <input
-              {...register("Question9")}
+              {...register("dens")}
               className="form-check-input"
               type="radio"
-              name="Question9"
-              id="Question9"
+              name="dens"
+              id="dens"
               value="1~3"
             />
             1~3
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question9">
+          <label className="form-check-label" for="dens">
             <input
-              {...register("Question9")}
+              {...register("dens")}
               className="form-check-input"
               type="radio"
-              name="Question9"
-              id="Question9"
+              name="dens"
+              id="dens"
               value="4~6"
             />
             4~6
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question9">
+          <label className="form-check-label" for="dens">
             <input
-              {...register("Question9")}
+              {...register("dens")}
               className="form-check-input"
               type="radio"
-              name="Question9"
-              id="Question9"
+              name="dens"
+              id="dens"
               value="7~9"
             />
             7~9
@@ -341,87 +356,41 @@ export default function questionnaire() {
 
         <div className="form-check">
           <p>
-            <strong>What do you want us to focus on?</strong>
-          </p>
-          <label className="form-check-label" for="Question10">
-            <input
-              {...register("Question10")}
-              className="form-check-input"
-              type="radio"
-              name="Question10"
-              id="Question10"
-              value="Kitchen"
-            />
-            Kitchen
-          </label>
-        </div>
-        <div className="form-check">
-          <label className="form-check-label" for="Question10">
-            <input
-              {...register("Question10")}
-              className="form-check-input"
-              type="radio"
-              name="Question10"
-              id="Question10"
-              value="Bedrooms"
-            />
-            Bedrooms
-          </label>
-        </div>
-        <div className="form-check">
-          <label className="form-check-label" for="Question10">
-            <input
-              {...register("Question10")}
-              className="form-check-input"
-              type="radio"
-              name="Question10"
-              id="Question10"
-              value="Bathrooms"
-            />
-            Bathrooms
-          </label>
-        </div>
-
-        <br />
-        <br />
-
-        <div className="form-check">
-          <p>
             <strong>How often do you want us come?</strong>
           </p>
-          <label className="form-check-label" for="Question11">
+          <label className="form-check-label" for="frequency">
             <input
-              {...register("Question11")}
+              {...register("frequency")}
               className="form-check-input"
               type="radio"
-              name="Question11"
-              id="Question11"
+              name="frequency"
+              id="frequency"
               value="Weekly"
             />
             Weekly
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question11">
+          <label className="form-check-label" for="frequency">
             <input
-              {...register("Question11")}
+              {...register("frequency")}
               className="form-check-input"
               type="radio"
-              name="Question11"
-              id="Question11"
+              name="frequency"
+              id="frequency"
               value="Bi-Weekly"
             />
             Bi-Weekly
           </label>
         </div>
         <div className="form-check">
-          <label className="form-check-label" for="Question11">
+          <label className="form-check-label" for="frequency">
             <input
-              {...register("Question11")}
+              {...register("frequency")}
               className="form-check-input"
               type="radio"
-              name="Question11"
-              id="Question11"
+              name="frequency"
+              id="frequency"
               value="Monthly"
             />
             Monthly
@@ -431,8 +400,8 @@ export default function questionnaire() {
         <br />
         <br />
       </fieldset>
-      <Button variant="primary" className="pull-right" type="submit">
-        Submit
+      <Button href="/residenceAddress" variant="primary" className="pull-right" type="submit">
+        Next
       </Button>
     </form>
   );
