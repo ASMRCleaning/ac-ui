@@ -1,14 +1,29 @@
 import { Card, Form, Alert, Button, Container } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authenticateUser } from "../lib/authenticate";
 import { useRouter } from "next/router";
+import { useAtom } from "jotai";
+import { userNameAtom, customerInfoAtom } from "../store";
+import { getCustomerInfo } from "../lib/customer";
 
 export default function Login(props) {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [warning, setWarning] = useState("");
 
+  //global variable to store username
+  const [userName, setUserName] = useAtom(userNameAtom);
+  const [customerInfo, setCustomerInfo] = useAtom(customerInfoAtom);
+
   const router = useRouter();
+
+  useEffect(() =>{
+    console.log(`userName was changed to: ${userName}`);
+  }, [userName]);
+
+  useEffect(() =>{
+    console.log(`customer was changed to: ${customerInfo}`);
+  }, [customerInfo.firstName]);
 
   async function submitForm(e) {
     e.preventDefault();
@@ -18,7 +33,16 @@ export default function Login(props) {
       return
     }
     try {
-      await authenticateUser(user, password)
+      //get the userName
+      const username = await authenticateUser(user, password)
+      //set the changes to global variable
+      setUserName(username);
+
+      const customer = await getCustomerInfo(userName);
+      setCustomerInfo({'userId': customer.userId, 
+                      'firstName':customer.firstName,
+                      'lastName': customer.lastName});
+
       router.push('/userHome');
     }
     catch (err) {

@@ -4,20 +4,19 @@ import { Form, Row, Button, Image, Alert, Container, Col } from "react-bootstrap
 import { useRouter } from "next/router";
 import Error from 'next/error';
 import useSWR from 'swr';
+import { useAtom } from "jotai";
+import { customerInfoAtom, userNameAtom } from "../store";
 
 const Profile = ({userId}) => {
-    const [user, setUser] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [password, setPassword] = useState('');
-    const [password2, setPassword2] = useState('');
-    const [role, setRole] = useState('');
+    const error = false;
     const [warning, setWarning] = useState('');
     const [disable, setDisable] = useState(true);
 
-    const router = useRouter();
+    //global variable defined in store.js
+    const [userName, setUserName] = useAtom(userNameAtom);
+    const [customerInfo, setCustomerInfo] = useAtom(customerInfoAtom);
 
-    const {data, error} = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/user/${userId}`)
+    const router = useRouter();
 
     if(error){
         return <Error statusCode={404}/>
@@ -60,11 +59,11 @@ const Profile = ({userId}) => {
             <Form  onSubmit={submitForm} className="container mt-3 mb-3" style={{paddingLeft:"10%"}}>
                 <Row className="mb-9">
                     <Form.Group className="col col-sm-9">
-                        <Form.Label>Email</Form.Label>
+                        <Form.Label>User</Form.Label>
                         <Form.Control type="text"
                             id="user"
                             name="user"
-                            value={user}
+                            value={userName}
                             disabled="true"
                             onChange={e => setUser(e.target.value)} />
                     </Form.Group>
@@ -76,7 +75,7 @@ const Profile = ({userId}) => {
                         <Form.Control type="text"
                             id="firstName"
                             name="firstName"
-                            value={firstName}
+                            value={customerInfo.firstName}
                             disabled={disable}
                             onChange={e => setFirstName(e.target.value)} />
                     </Form.Group>
@@ -88,35 +87,12 @@ const Profile = ({userId}) => {
                         <Form.Control type="text"
                             id="lastName"
                             name="lastName"
-                            value={lastName}
+                            value={customerInfo.lastName}
                             disabled={disable}
                             onChange={e => setLastName(e.target.value)} />
                     </Form.Group>
                 </Row>
                 <br />
-                <Row>
-                    <Form.Group className="col col-sm-9">
-                        <Form.Label>Password:</Form.Label>
-                        <Form.Control type="password"
-                            value={password}
-                            id="password"
-                            name="password"
-                            disabled={disable}
-                            onChange={e => setPassword(e.target.value)} />
-                    </Form.Group>
-                </Row>
-                <br />
-                <Row className="mb-9">
-                    <Form.Group className=" col col-sm-9" >
-                        <Form.Label>Confirm the password:</Form.Label>
-                        <Form.Control type="password"
-                            value={password2}
-                            id="password2"
-                            name="password2"
-                            disabled={disable}
-                            onChange={e => setPassword2(e.target.value)} />
-                    </Form.Group>
-                </Row>
                 {warning && (<>
                     <br />
                     <Alert variant="danger">{warning}</Alert>
