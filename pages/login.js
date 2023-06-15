@@ -11,17 +11,17 @@ export default function Login(props) {
   const [password, setPassword] = useState("");
   const [warning, setWarning] = useState("");
 
-  //global variable to store username
+  //global variable to store customer information and get userName
   const [userName, setUserName] = useAtom(userNameAtom);
   const [customerInfo, setCustomerInfo] = useAtom(customerInfoAtom);
 
   const router = useRouter();
 
-  useEffect(() =>{
+  useEffect(() => {
     console.log(`userName was changed to: ${userName}`);
   }, [userName]);
 
-  useEffect(() =>{
+  useEffect(() => {
     console.log(`customer was changed to: ${customerInfo}`);
   }, [customerInfo.firstName]);
 
@@ -35,13 +35,15 @@ export default function Login(props) {
     try {
       //get the userName
       const username = await authenticateUser(user, password)
-      //set the changes to global variable
       setUserName(username);
 
+      //TODO see better practice on that and why first call fail
       const customer = await getCustomerInfo(userName);
-      setCustomerInfo({'userId': customer.userId, 
-                      'firstName':customer.firstName,
-                      'lastName': customer.lastName});
+      setCustomerInfo({
+        'userId': customer.userId,
+        'firstName': customer.firstName,
+        'lastName': customer.lastName
+      });
 
       router.push('/userHome');
     }
