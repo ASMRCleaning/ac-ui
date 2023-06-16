@@ -2,9 +2,11 @@ import React from "react";
 import { Navbar, Nav, Form, Button, NavDropdown } from 'react-bootstrap';
 import { isAuthenticated, removeToken } from "../lib/authenticate";
 import { useRouter } from "next/router";
+import Link from 'next/link';
 import { useAtom } from "jotai";
 import { customerInfoAtom, userNameAtom } from "../store";
-import Link from 'next/link';
+import { getCustomerInfo } from "../lib/customer";
+
 
 const Header = (props) => {
     //set userName global variable to show in header navbar
@@ -92,16 +94,16 @@ const Header = (props) => {
                             <Nav.Item className="ml-auto">
                                 {!isAuthenticated() ? <Nav.Link href="/login">Login</Nav.Link> :
                                     <Nav.Item >
-                                        <NavDropdown title={`Hi, ${customerInfo.firstName}`} id="basic-nav-dropdown">
-                                            <NavDropdown.Item onClick={customer}>  
-                                                <Link style={{ textDecoration: "none" }}> User Home Page </Link></NavDropdown.Item>
+                                        <NavDropdown  title={`Hi, ${customerInfo.firstName}`} id="basic-nav-dropdown">
+                                             <NavDropdown.Item>  
+                                                <Link style={{ textDecoration: "none" }} href="/userHome"> User Home Page </Link></NavDropdown.Item>
                                             <NavDropdown.Item>
                                                 <Link style={{ textDecoration: "none" }} href="/profile"> Profile </Link></NavDropdown.Item>
                                             <NavDropdown.Item>
-                                                <Link style={{ textDecoration: "none" }} href="/residence">Residence</Link></NavDropdown.Item>
+                                                <Link style={{ textDecoration: "none" }} href="/residence">Residence</Link></NavDropdown.Item> 
                                             <NavDropdown.Item>
                                                 <Link style={{ textDecoration: "none" }} href="/residenceAddress">Address</Link></NavDropdown.Item>
-                                            <NavDropdown.Item>
+                                             <NavDropdown.Item>
                                                 <Link style={{ textDecoration: "none" }} href="/booking"> Booking</Link></NavDropdown.Item>
                                             <NavDropdown.Item onClick={logout}> Logout</NavDropdown.Item>
                                         </NavDropdown>
