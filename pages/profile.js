@@ -26,16 +26,11 @@ const Profile = ({userId}) => {
     async function submitForm(e) {
         e.preventDefault();
 
-        if(user === "") return setWarning('You do not have a user. Please register first in Login page')
-        if (user === "" || firstName === "" || lastName === "" || password === "" || password2 === "" || role === "") {
+         if (firstName === "" || lastName === "" ) {
             setWarning('Please fill all required fields above')
             return
         }
 
-        if (password !== password2) {
-            setWarning('Password do not match');
-            return
-        }
         try {
             await registerUser(user, firstName, lastName, password, password2, role)
             router.push('/login');
@@ -77,7 +72,7 @@ const Profile = ({userId}) => {
                             name="firstName"
                             value={customerInfo.firstName}
                             disabled={disable}
-                            onChange={e => setFirstName(e.target.value)} />
+                            onChange={e => setCustomerInfo({'firstName':e.target.value})} />
                     </Form.Group>
                 </Row>
                 <br />
@@ -105,14 +100,14 @@ const Profile = ({userId}) => {
                         className="btn btn-outline-info" 
                         type="submit" 
                         style={{padding: "10px", margin: "1px", width: "40%"}}
-                        disabled={!disable}
+                        // disabled="false"
                         onClick={enableField}>Edit</Button>
                 </Col>
                 <Col>
                 <Button variant="primary" 
                         className="btn btn-outline-success" 
                         type="submit" 
-                        disabled={disable}
+                        // disabled={disable}
                         style={{padding: "10px", margin: "1px", width: "40%"}}>Save</Button>
                 </Col>
                 </Row>
