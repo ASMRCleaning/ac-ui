@@ -161,7 +161,9 @@ const Residence = () => {
                         >Edit</Button>
                 </Col>
                 <Col>
-                <Button variant="primary" 
+                <Button
+                        href="/result"
+                        variant="primary" 
                         className="btn btn-outline-success" 
                         type="submit" 
                         // disabled={disable}
