@@ -1,11 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "react-bootstrap";
-import { questionnaireForm } from "../lib/questionnaire";
+import { getResidence, registerResidence } from "../lib/residence";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-
+import { useAtom } from "jotai";
+import { userNameAtom, residenceInfoAtom } from "../store";
 
 export default function questionnaire() {
   const { register, handleSubmit, setValue } = useForm({
@@ -36,13 +37,42 @@ export default function questionnaire() {
     };
 
     // set the values of each form field to match "data"
-
     for (const prop in data) {
       setValue(prop, data[prop]);
+      console.log(houseType);
     }
   }, []);
 
-  function onSubmit(data) {
+  const [userName, setUserName] = useAtom(userNameAtom);
+  const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
+
+  useEffect(() => {
+    //retrieve residence information when the component mounts
+    async function fetchResidence() {
+      const data = await getResidence(userName);
+      setResidenceInfo(data);
+    }
+
+    fetchResidence();
+  }, []);
+
+  async function onSubmit(data) {
+    data.preventDefault();
+
+    if (
+      houseType === "" ||
+      size === "" ||
+      empty === "" ||
+      furnished === "" ||
+      pet === "" ||
+      bedrooms === "" ||
+      bath === "" ||
+      dens === "" ||
+      frequency === ""
+    ) {
+      setWarning("Please fill answer to all questions");
+      return;
+    }
     console.log(data);
   }
 
@@ -64,7 +94,8 @@ export default function questionnaire() {
               type="radio"
               name="houseType"
               id="houseType"
-              value="Apartment"
+              value={residenceInfo.houseType ?? houseType}
+              onChange={(data) => setValue(data.target.value)}
             />
             Apartment
           </label>
@@ -77,7 +108,8 @@ export default function questionnaire() {
               type="radio"
               name="houseType"
               id="houseType"
-              value="Condo"
+              value={residenceInfo.houseType ?? houseType}
+              onChange={(data) => setValue(data.target.value)}
             />
             Condo
           </label>
@@ -90,7 +122,8 @@ export default function questionnaire() {
               type="radio"
               name="houseType"
               id="houseType"
-              value="House"
+              value={residenceInfo.houseType ?? houseType}
+              onChange={(data) => setValue(data.target.value)}
             />
             House
           </label>
@@ -128,7 +161,8 @@ export default function questionnaire() {
               type="radio"
               name="empty"
               id="empty"
-              value="Empty"
+              value={residenceInfo.empty ?? empty}
+              onChange={(data) => setValue(data.target.value)}
             />
             Empty
           </label>
@@ -141,7 +175,8 @@ export default function questionnaire() {
               type="radio"
               name="empty"
               id="empty"
-              value="Occupied"
+              value={residenceInfo.empty ?? empty}
+              onChange={(data) => setValue(data.target.value)}
             />
             Occupied
           </label>
@@ -161,7 +196,8 @@ export default function questionnaire() {
               type="radio"
               name="furnished"
               id="furnished"
-              value="Yes"
+              value={residenceInfo.furnished ?? furnished}
+              onChange={(data) => setValue(data.target.value)}
             />
             Yes
           </label>
@@ -174,7 +210,8 @@ export default function questionnaire() {
               type="radio"
               name="furnished"
               id="furnished"
-              value="No"
+              value={residenceInfo.furnished ?? furnished}
+              onChange={(data) => setValue(data.target.value)}
             />
             No
           </label>
@@ -194,7 +231,8 @@ export default function questionnaire() {
               type="radio"
               name="pet"
               id="pet"
-              value="Yes"
+              value={residenceInfo.pet ?? pet}
+              onChange={(data) => setValue(data.target.value)}
             />
             Yes
           </label>
@@ -207,7 +245,8 @@ export default function questionnaire() {
               type="radio"
               name="pet"
               id="pet"
-              value="No"
+              value={residenceInfo.pet ?? pet}
+              onChange={(data) => setValue(data.target.value)}
             />
             No
           </label>
@@ -220,43 +259,15 @@ export default function questionnaire() {
           <p>
             <strong>How many bedrooms do you have?</strong>
           </p>
-          <label className="form-check-label" for="bedrooms">
-            <input
+          <div className="form-group">
+            <label for="exampleTextarea" className="form-input-lable-2"></label>
+            <textarea
               {...register("bedrooms")}
-              className="form-check-input"
-              type="radio"
-              name="bedrooms"
-              id="bedrooms"
-              value="1~5"
-            />
-            1~5
-          </label>
-        </div>
-        <div className="form-check">
-          <label className="form-check-label" for="bedrooms">
-            <input
-              {...register("bedrooms")}
-              className="form-check-input"
-              type="radio"
-              name="bedrooms"
-              id="bedrooms"
-              value="6~10"
-            />
-            6~10
-          </label>
-        </div>
-        <div className="form-check">
-          <label className="form-check-label" for="bedrooms">
-            <input
-              {...register("bedrooms")}
-              className="form-check-input"
-              type="radio"
-              name="bedrooms"
-              id="bedrooms"
-              value="11~15"
-            />
-            11~15
-          </label>
+              className="form-control"
+              id="size"
+              rows="1"
+            ></textarea>
+          </div>
         </div>
 
         <br />
@@ -264,45 +275,17 @@ export default function questionnaire() {
 
         <div className="form-check">
           <p>
-            <strong>How many bathrooms do you have?</strong>
+            <strong>How many bedrooms do you have?</strong>
           </p>
-          <label className="form-check-label" for="bath">
-            <input
-              {...register("bath")}
-              className="form-check-input"
-              type="radio"
-              name="bath"
+          <div className="form-group">
+            <label for="exampleTextarea" className="form-input-lable-2"></label>
+            <textarea
+              {...register("batg")}
+              className="form-control"
               id="bath"
-              value="1~3"
-            />
-            1~3
-          </label>
-        </div>
-        <div className="form-check">
-          <label className="form-check-label" for="bath">
-            <input
-              {...register("bath")}
-              className="form-check-input"
-              type="radio"
-              name="bath"
-              id="bath"
-              value="4~6"
-            />
-            4~6
-          </label>
-        </div>
-        <div className="form-check">
-          <label className="form-check-label" for="bath">
-            <input
-              {...register("bath")}
-              className="form-check-input"
-              type="radio"
-              name="bath"
-              id="bath"
-              value="7~9"
-            />
-            7~9
-          </label>
+              rows="1"
+            ></textarea>
+          </div>
         </div>
 
         <br />
@@ -312,43 +295,15 @@ export default function questionnaire() {
           <p>
             <strong>How many dens or small offices do you have?</strong>
           </p>
-          <label className="form-check-label" for="dens">
-            <input
+          <div className="form-group">
+            <label for="exampleTextarea" className="form-input-lable-2"></label>
+            <textarea
               {...register("dens")}
-              className="form-check-input"
-              type="radio"
-              name="dens"
+              className="form-control"
               id="dens"
-              value="1~3"
-            />
-            1~3
-          </label>
-        </div>
-        <div className="form-check">
-          <label className="form-check-label" for="dens">
-            <input
-              {...register("dens")}
-              className="form-check-input"
-              type="radio"
-              name="dens"
-              id="dens"
-              value="4~6"
-            />
-            4~6
-          </label>
-        </div>
-        <div className="form-check">
-          <label className="form-check-label" for="dens">
-            <input
-              {...register("dens")}
-              className="form-check-input"
-              type="radio"
-              name="dens"
-              id="dens"
-              value="7~9"
-            />
-            7~9
-          </label>
+              rows="1"
+            ></textarea>
+          </div>
         </div>
 
         <br />
@@ -400,7 +355,12 @@ export default function questionnaire() {
         <br />
         <br />
       </fieldset>
-      <Button href="/residenceAddress" variant="primary" className="pull-right" type="submit">
+      <Button
+        href="/residenceAddress"
+        variant="primary"
+        className="pull-right"
+        type="submit"
+      >
         Next
       </Button>
     </form>
