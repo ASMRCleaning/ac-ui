@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row, Form, Button, Image, Alert, Col } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container, Row, Form, Button, Image, Alert } from "react-bootstrap";
 import { useRouter } from 'next/router';
-import { getResidence, registerResidence } from "../lib/residence";
-import { useAtom } from "jotai";
-import { userNameAtom, residenceInfoAtom } from "../store";
+import { getResidenceAddress, registerResidenceAddress } from "../lib/residenceAddress";
 
 const Residence = () => {
     const [address, setAddress] = useState('');
@@ -13,27 +11,12 @@ const Residence = () => {
     const [province, setProvince] = useState('');
     const [warning, setWarning] = useState('');
 
-    //global variable defined in store.js
-    const [userName, setUserName] = useAtom(userNameAtom);
-    const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
-
     const router = useRouter();
-    
-
-    useEffect (() =>{
-        //retrieve residence information when the component mounts
-        async function fetchResidence(){
-            const data = await getResidence(userName);
-            setResidenceInfo(data);
-        }
-
-        fetchResidence();
-    }, []);
 
     async function submitForm(e) {
         e.preventDefault();
 
-        if (address === "" || unit ==="" || postalCode === "" || city === "" || province === "") {
+        if (address === "" || postalCode === "" || city === "" || province === "") {
             setWarning('Please fill all required fields above')
             return
         }
@@ -44,9 +27,10 @@ const Residence = () => {
         }
 
         try {
-            await registerResidence(address, unit, postalCode, city, province)
+            await registerResidenceAddress(address, unit, postalCode, city, province)
             router.push('/login');
             console.log("good")
+            console.log(registerResidenceAddress(address, unit, postalCode, city, province))
         }
         catch (err) {
             setWarning(err.message);
@@ -60,7 +44,7 @@ const Residence = () => {
                     <Image src="/residence-2.jpg" style={{ height: "10%", width: "105%" }} />
                 </Row>
                 <br />
-                {residenceInfo === null ?
+                {getResidenceAddress() === [] ?
                         <Row>
                             <p style={{ fontWeight: 'bold', fontSize: '2rem' }}>  Please provide you residence information</p>
                         </Row> :
@@ -75,7 +59,7 @@ const Residence = () => {
                             <Form.Control type="address"
                                 id="address"
                                 name="address"
-                                value={residenceInfo.address?.address ?? address}
+                                value={address}
                                 placeholder="1111, Street Name"
                                 className="form-floating"
                                 onChange={e => setAddress(e.target.value)} />
@@ -85,7 +69,7 @@ const Residence = () => {
                             <Form.Control type="unit"
                                 id="unit"
                                 name="unit"
-                                value={residenceInfo.address?.unit ?? unit}
+                                value={unit}
                                 placeholder="2023"
                                 onChange={e => setUnit(e.target.value)} />
                         </Form.Group>
@@ -97,7 +81,7 @@ const Residence = () => {
                             <Form.Control type="text"
                                 id="postalCode"
                                 name="postalCode"
-                                value={residenceInfo.address?.postalCode ?? postalCode}
+                                value={postalCode}
                                 placeholder="A0B-1C7"
                                 onChange={e => setPostalCode(e.target.value)} />
                         </Form.Group>
@@ -106,7 +90,7 @@ const Residence = () => {
                             <Form.Control type="text"
                                 id="city"
                                 name="city"
-                                value={residenceInfo.address?.city ?? city}
+                                value={city}
                                 placeholder="Toronto"
                                 onChange={e => setCity(e.target.value)} />
                         </Form.Group>
@@ -124,7 +108,7 @@ const Residence = () => {
                             <Form.Select defaultValue="Choose..."
                                 id="province"
                                 name="province"
-                                value={residenceInfo.address?.province ?? province}
+                                value={province}
                                 onChange={e => setProvince(e.target.value)}>
                                 <option value="Choose...">Choose...</option>
                                 <option value="ON">ON - Ontario</option>
@@ -145,32 +129,9 @@ const Residence = () => {
                         <Alert variant="danger">{warning}</Alert>
                     </>)}
                     <br /><br />
-                    {residenceInfo === null ?
                     <Container className="d-flex" style={{ paddingLeft: "35%", justifyItems: "center", alignItems: "center", paddingBottom: '4%' }}>
                         <Button variant="primary" className="btn btn-outline-success btn-sm" style={{ padding: "10px", height: "50px", width: "180px" }} type="submit">Save</Button>
-                    </Container> :
-                    <Row className="mb-3" style={{padding:"10px"}}>
-                <br /> 
-                <Col>
-                <Button variant="primary" 
-                        className="btn btn-outline-info" 
-                        type="submit" 
-                        style={{padding: "10px", margin: "1px", width: "40%"}}
-                        // disabled="false"
-                        // onClick={enableField}
-                        >Edit</Button>
-                </Col>
-                <Col>
-                <Button
-                        href="/result"
-                        variant="primary" 
-                        className="btn btn-outline-success" 
-                        type="submit" 
-                        // disabled={disable}
-                        style={{padding: "10px", margin: "1px", width: "40%"}}>Save</Button>
-                </Col>
-                </Row>
-                    }
+                    </Container>
                 </Form>
             </Container>
         </>
