@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import { authenticateUser } from "../lib/authenticate";
 import { useRouter } from "next/router";
 import { useAtom } from "jotai";
-import { userNameAtom, customerInfoAtom } from "../store";
+import { userNameAtom, customerInfoAtom, residenceInfoAtom } from "../store";
 import { getCustomerInfo } from "../lib/customer";
+import { registerResidence } from "../lib/residence";
 
 export default function Login(props) {
   const [user, setUser] = useState("");
@@ -14,16 +15,38 @@ export default function Login(props) {
   //global variable to store customer information and get userName
   const [userName, setUserName] = useAtom(userNameAtom);
   const [customerInfo, setCustomerInfo] = useAtom(customerInfoAtom);
+  const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
 
   const router = useRouter();
 
-  useEffect(() => {
-    console.log(`userName was changed to: ${userName}`);
-  }, [userName]);
+  //get where login page comes from
+  const source = sessionStorage.getItem('source');
 
-  useEffect(() => {
-    console.log(`customer was changed to: ${customerInfo}`);
-  }, [customerInfo.firstName]);
+  // useEffect(() => {
+  //   console.log(`userName was changed to: ${userName}`);
+  // }, [userName]);
+
+  // useEffect(() => {
+  //   console.log(`customer was changed to: ${customerInfo.firstName}`);
+  // }, [customerInfo.firstName]);
+
+  // useEffect(() => {
+  //   console.log(`Residence info: ${residenceInfo.houseType}`);
+  // }, [residenceInfo.houseType]);
+
+  // useEffect(() => {
+  //   const source = sessionStorage.getItem('source');
+  //   if (source === 'questionnaire') {
+  //     // Redirect to the home page after login
+  //     router.push('/residenceAddress');
+  //   } else {
+  //     // Redirect to a default page or display an error message
+  //     router.push('/userHome');
+  //   }
+
+    // Clear the session storage value after use
+  //   sessionStorage.removeItem('source');
+  // }, []);
 
   async function submitForm(e) {
     e.preventDefault();
@@ -38,14 +61,29 @@ export default function Login(props) {
       setUserName(username);
 
       //TODO see better practice on that and why first call fail
-      const customer = await getCustomerInfo(username);
+      const customer = await getCustomerInfo();
       setCustomerInfo({
-        'userId': customer.userId,
-        'firstName': customer.firstName,
-        'lastName': customer.lastName
+        userId: customer.userId,
+        firstName: customer.firstName,
+        lastName: customer.lastName
       });
 
-      router.push('/userHome');
+      // check if user has residence info to send to API side due to questionnaire form
+        // if(residenceInfo){
+        //   try{
+        //     const res = await registerResidence(residenceInfo);
+        //   }
+        //   catch(err){
+        //     console.log(err)
+        //   }
+        //   router.push('/residenceAddress');
+        // }
+        // else{
+        //   router.push('/userHome');
+        // }
+
+        router.push("/residenceAddress");
+
     }
     catch (err) {
       setWarning(err.message);

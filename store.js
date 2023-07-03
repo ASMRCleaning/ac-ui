@@ -22,7 +22,7 @@ export const residenceInfoAtom = atom({
     'dens': 0,
     'frequency': '',
     'address': {
-        'address': '',
+        'streetAddress': '',
         'unit': '',
         'postalCode': '',
         'city': '',
