@@ -1,70 +1,41 @@
-import React from "react";
-import { Container, Row, Form, Button, Image, Alert, Col } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container, Row, Form, Button, Image, Alert } from "react-bootstrap";
 import { useRouter } from 'next/router';
-import { registerResidence } from "../lib/residence";
-import { useAtom } from "jotai";
-import { residenceInfoAtom } from "../store";
-import { useForm } from 'react-hook-form';
+import { getResidenceAddress, registerResidenceAddress } from "../lib/residenceAddress";
 
 const Residence = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
-
-    //global variable defined in store.js
-    const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
+    const [address, setAddress] = useState('');
+    const [unit, setUnit] = useState('');
+    const [postalCode, setPostalCode] = useState('');
+    const [city, setCity] = useState('');
+    const [province, setProvince] = useState('');
+    const [warning, setWarning] = useState('');
 
     const router = useRouter();
 
-    // useEffect(() => {
-    //     //retrieve residence information when the component mounts
-    //     async function fetchResidence() {
-    //         const data = await getResidence();
-    //         setResidenceInfo({
-    //             houseType: data.houseType,
-    //             size: data.size,
-    //             empty: data.empty,
-    //             furnished: data.furnished,
-    //             pet: data.pet,
-    //             bedroom: data.bedroom,
-    //             bathroom: data.bathroom,
-    //             den: data.den,
-    //             frequency: data.frequency,
-    //             address: {
-    //                 streetAddress: data.address?.streetAddress,
-    //                 unit: data.address?.unit,
-    //                 postalCode: data.address?.postalCode,
-    //                 city: data.address?.city,
-    //                 province: data.address?.province,
-    //                 country: data.address?.country
-    //             }
-    //         });
-    //     }
+    async function submitForm(e) {
+        e.preventDefault();
 
-    //     fetchResidence();
-    // }, []);
+        if (address === "" || postalCode === "" || city === "" || province === "") {
+            setWarning('Please fill all required fields above')
+            return
+        }
 
-    async function submitForm(data) {
-        setResidenceInfo({
-            ...residenceInfo,
-            address: {
-                streetAddress: data.streetAddress,
-                unit: data.unit,
-                postalCode: data.postalCode,
-                city: data.city,
-                province: data.province,
-                country: data.country
-            }
-        });
+        if (province === "Choose...") {
+            setWarning('Please choose a province');
+            return
+        }
 
-        console.log(residenceInfo);
-
-            try {
-                await registerResidence(residenceInfo);
-                router.push('/result')
-            }
-            catch (err) {
-                console.log(err);
-            }
-        // }
+        try {
+            await registerResidenceAddress(address, unit, postalCode, city, province)
+            router.push('/login');
+            console.log("good")
+            console.log(registerResidenceAddress(address, unit, postalCode, city, province))
+        }
+        catch (err) {
+            setWarning(err.message);
+            console.log("bad")
+        }
     }
     return (
         <>
@@ -73,64 +44,55 @@ const Residence = () => {
                     <Image src="/residence-2.jpg" style={{ height: "10%", width: "105%" }} />
                 </Row>
                 <br />
-                {residenceInfo === null ?
-                    <Row>
-                        <p style={{ fontWeight: 'bold', fontSize: '2rem' }}>  Please provide you residence information</p>
-                    </Row> :
-                    <Row>
-                        <p style={{ fontWeight: 'bold', fontSize: '2rem' }}>  Check your residence information</p>
-                    </Row>}
+                {getResidenceAddress() === [] ?
+                        <Row>
+                            <p style={{ fontWeight: 'bold', fontSize: '2rem' }}>  Please provide you residence information</p>
+                        </Row> :
+                        <Row>
+                            <p style={{ fontWeight: 'bold', fontSize: '2rem' }}>  Check your residence information</p>
+                        </Row> }
                 <br />
-                <Form onSubmit={handleSubmit(submitForm)} className="container mt-3 mb-3">
+                <Form onSubmit={submitForm} className="container mt-3 mb-3">
                     <Row className="mb-6">
                         <Form.Group className="col col-sm-9">
                             <Form.Label>Street Address</Form.Label>
-                            <Form.Control className={errors.streetAddress && "inputErrors"}{...register("streetAddress", { required: true })}
-                                type="text"
-                                id="streetAddress"
-                                name="streetAddress"
-                                // value={residenceInfo.address?.streetAddress}
-                                placeholder="1111, Street Name" />
-                            <br />
-                            {errors.streetAddress?.type === "required" && (<Alert variant="danger">Street Address is required</Alert>)}
+                            <Form.Control type="address"
+                                id="address"
+                                name="address"
+                                value={address}
+                                placeholder="1111, Street Name"
+                                className="form-floating"
+                                onChange={e => setAddress(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="col col-sm-3">
                             <Form.Label>Apartment, unit, suite, etc</Form.Label>
-                            <Form.Control className={errors.unit && "inputErrors"} {...register("unit", { minLength: 1, maxLength: 150 })}
-                                type="text"
+                            <Form.Control type="unit"
                                 id="unit"
                                 name="unit"
-                                // value={residenceInfo.address?.unit}
-                                placeholder="2023" />
-                            <br />
-                            {errors.unit?.type === "minLength" && (<Alert variant="danger">Unit must be more than 5 charater </Alert>)}
-                            {errors.unit?.type === "maxLength" && (<Alert variant="danger">Unit must be less than 150 charater</Alert>)}
+                                value={unit}
+                                placeholder="2023"
+                                onChange={e => setUnit(e.target.value)} />
                         </Form.Group>
                     </Row>
                     <br />
                     <Row className="mb-9">
                         <Form.Group className="col col-sm-4">
                             <Form.Label>Postal Code</Form.Label>
-                            <Form.Control className={errors.postalCode && "inputErrors"} {...register("postalCode", { required: true, pattern: /^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/, })}
-                                type="text"
+                            <Form.Control type="text"
                                 id="postalCode"
                                 name="postalCode"
-                                // value={residenceInfo.address?.postalCode}
-                                placeholder="A0B-1C7" />
-                            <br />
-                            {errors.postalCode?.type === "pattern" && (<Alert variant="danger">Postal Code is not correct </Alert>)}
-                            {errors.postalCode?.type === "required" && (<Alert variant="danger">Postal Code is required</Alert>)}
+                                value={postalCode}
+                                placeholder="A0B-1C7"
+                                onChange={e => setPostalCode(e.target.value)} />
                         </Form.Group>
                         <Form.Group className="col col-sm-8">
                             <Form.Label>City</Form.Label>
-                            <Form.Control className={errors.city && "inputErrors"} {...register("city", { required: true, })}
-                                type="text"
+                            <Form.Control type="text"
                                 id="city"
                                 name="city"
-                                // value={residenceInfo.address?.city}
-                                placeholder="Toronto" />
-                            <br />
-                            {errors.city?.type === "required" && (<Alert variant="danger">City is required</Alert>)}
+                                value={city}
+                                placeholder="Toronto"
+                                onChange={e => setCity(e.target.value)} />
                         </Form.Group>
                     </Row>
                     <br />
@@ -143,8 +105,12 @@ const Residence = () => {
                         </Form.Group>
                         <Form.Group className="col col-sm-9">
                             <Form.Label>Province</Form.Label>
-                            <Form.Select className={errors.province && "inputErrors"} {...register("province", { required: true })}>
-                                <option value="">Select</option>
+                            <Form.Select defaultValue="Choose..."
+                                id="province"
+                                name="province"
+                                value={province}
+                                onChange={e => setProvince(e.target.value)}>
+                                <option value="Choose...">Choose...</option>
                                 <option value="ON">ON - Ontario</option>
                                 <option value="QC">QB - Quebec</option>
                                 <option value="NS">NS - Nova Scotia</option>
@@ -156,38 +122,16 @@ const Residence = () => {
                                 <option value="AB">AB - Alberta</option>
                                 <option value="NL">NL - Newfoundland and Labrador</option>
                             </Form.Select>
-                            <br />
-                            {errors.province && errors.province.type === "required" && (<Alert variant="danger">Province is required</Alert>)}
                         </Form.Group>
                     </Row>
+                    {warning && (<>
+                        <br />
+                        <Alert variant="danger">{warning}</Alert>
+                    </>)}
                     <br /><br />
-                    {residenceInfo === null ?
-                        <Container className="d-flex" style={{ paddingLeft: "35%", justifyItems: "center", alignItems: "center", paddingBottom: '4%' }}>
-                            <Button variant="primary" className="btn btn-outline-success btn-sm" style={{ padding: "10px", height: "50px", width: "180px" }} type="submit">Save</Button>
-                        </Container> :
-                        <Row className="mb-3" style={{ padding: "10px" }}>
-                            <br />
-                            <Col>
-                                <Button variant="primary"
-                                    className="btn btn-outline-info"
-                                    type="submit"
-                                    style={{ padding: "10px", margin: "1px", width: "40%" }}
-                                // disabled="false"
-                                // onClick={enableField}
-                                >Edit</Button>
-                            </Col>
-                            <Col>
-                                <Button
-                                    // href="/result"
-                                    variant="primary"
-                                    className="btn btn-outline-success"
-                                    type="submit"
-                                    disable={Object.keys(errors).length > 0}
-                                    // disabled={disable}
-                                    style={{ padding: "10px", margin: "1px", width: "40%" }}>Save</Button>
-                            </Col>
-                        </Row>
-                    }
+                    <Container className="d-flex" style={{ paddingLeft: "35%", justifyItems: "center", alignItems: "center", paddingBottom: '4%' }}>
+                        <Button variant="primary" className="btn btn-outline-success btn-sm" style={{ padding: "10px", height: "50px", width: "180px" }} type="submit">Save</Button>
+                    </Container>
                 </Form>
             </Container>
         </>
