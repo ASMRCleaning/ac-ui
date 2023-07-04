@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Container, Row, Form, Button, Image, Alert, Col } from "react-bootstrap";
 import { useRouter } from 'next/router';
@@ -7,6 +8,7 @@ import { residenceInfoAtom } from "../store";
 import { useForm } from 'react-hook-form';
 
 const Residence = () => {
+
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
     //global variable defined in store.js
@@ -42,12 +44,9 @@ const Residence = () => {
     //     fetchResidence();
     // }, []);
 
-//       useEffect(() => {
-//     console.log(`ResidenceInfo: ${residenceInfo.houseType}`);
-//   }, []);
-
     async function submitForm(data) {
         setResidenceInfo({
+            //set the previous information added in residenceInfo
             ...residenceInfo,
             address: {
                 streetAddress: data.streetAddress,
@@ -58,7 +57,7 @@ const Residence = () => {
                 country: data.country
             }
         });
-        
+      
         console.log(residenceInfo);
 
             try {
