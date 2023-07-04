@@ -10,7 +10,7 @@ export const customerInfoAtom = atom({
     'lastName':'',
 })
 
-//residenceAddress information
+//residenceAddress information 
 export const residenceInfoAtom = atom({
     'houseType': '',
     'size': 0,

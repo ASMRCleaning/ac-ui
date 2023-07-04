@@ -83,7 +83,6 @@ export default function Login(props) {
         // }
 
         router.push("/residenceAddress");
-
     }
     catch (err) {
       setWarning(err.message);

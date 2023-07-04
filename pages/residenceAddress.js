@@ -14,6 +14,7 @@ const Residence = () => {
 
     const router = useRouter();
 
+    //TODO
     // useEffect(() => {
     //     //retrieve residence information when the component mounts
     //     async function fetchResidence() {

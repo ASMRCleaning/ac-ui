@@ -31,6 +31,7 @@ const Questionnaire = () => {
 
     if (userFound) {
       router.push('/residenceAddress');
+      //TODO
       //if authenticated, check if user has a residence registered
       // const residenceFound = await getResidence()
 
