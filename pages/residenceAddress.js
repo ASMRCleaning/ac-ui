@@ -1,13 +1,15 @@
-import React from "react";
+
+import React, { useEffect, useState } from "react";
 import { Container, Row, Form, Button, Image, Alert, Col } from "react-bootstrap";
 import { useRouter } from 'next/router';
-import { registerResidence } from "../lib/residence";
+import { registerResidence, getResidence } from "../lib/residence";
 import { useAtom } from "jotai";
 import { residenceInfoAtom } from "../store";
 import { useForm } from 'react-hook-form';
 
 const Residence = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
     //global variable defined in store.js
     const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
@@ -55,7 +57,7 @@ const Residence = () => {
                 country: data.country
             }
         });
-
+      
         console.log(residenceInfo);
 
             try {
@@ -94,6 +96,8 @@ const Residence = () => {
                                 placeholder="1111, Street Name" />
                             <br />
                             {errors.streetAddress?.type === "required" && (<Alert variant="danger">Street Address is required</Alert>)}
+                            {/* {errors.streetAddress?.type === "minLength" && (<Alert variant="danger">Street Address must be more than 5 charater </Alert>)}
+                            {errors.streetAddress?.type === "maxLength" && (<Alert variant="danger">Street Address must be less than 150 charater</Alert>)} */}
                         </Form.Group>
                         <Form.Group className="col col-sm-3">
                             <Form.Label>Apartment, unit, suite, etc</Form.Label>
