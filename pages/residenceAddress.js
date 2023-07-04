@@ -44,6 +44,7 @@ const Residence = () => {
 
     async function submitForm(data) {
         setResidenceInfo({
+            //set the previous information added in residenceInfo
             ...residenceInfo,
             address: {
                 streetAddress: data.streetAddress,
