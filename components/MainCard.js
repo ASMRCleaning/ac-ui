@@ -1,6 +1,5 @@
 import React from "react";
 import { Container, Card, Button, Row, Col } from "react-bootstrap";
-import Link from "next/link"; 
 
 const MainCard = (props) => {
   return (
@@ -41,14 +40,13 @@ const MainCard = (props) => {
                     zIndex: 1,
                   }}
                 >
-                  <Link href="/questionnaire"> 
-                    <Button 
-                      variant="outline-success"
-                      style={{ fontSize: "2.5rem", padding: "1rem 2rem" }}
-                    >
-                      Get a free quote here
-                    </Button>
-                  </Link>
+                  <Button
+                    href="/questionnaire"
+                    variant="outline-success"
+                    style={{ fontSize: "2.5rem", padding: "1rem 2rem" }}
+                  >
+                    Get a free quote here
+                  </Button>
                 </div>
               </div>
             </Col>
