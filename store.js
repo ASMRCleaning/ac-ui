@@ -5,9 +5,10 @@ export const userNameAtom = atom();
 
 //store customer information
 export const customerInfoAtom = atom({
-    'userId': '',
+    'username': '',
     'firstName':'',
     'lastName':'',
+    'role':'',
 })
 
 //residenceAddress information 
