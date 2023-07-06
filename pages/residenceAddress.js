@@ -16,6 +16,11 @@ const Residence = () => {
 
     const router = useRouter();
 
+    // Check the object changes
+    // useEffect(() => {
+    //     console.log(residenceInfo);
+    // }, [residenceInfo]);
+
     // useEffect(() => {
     //     //retrieve residence information when the component mounts
     //     async function fetchResidence() {
@@ -45,30 +50,32 @@ const Residence = () => {
     // }, []);
 
     async function submitForm(data) {
-        setResidenceInfo({
-            //set the previous information added in residenceInfo
-            ...residenceInfo,
-            address: {
-                streetAddress: data.streetAddress,
-                unit: data.unit,
-                postalCode: data.postalCode,
-                city: data.city,
-                province: data.province,
-                country: data.country
-            }
-        });
-      
-        console.log(residenceInfo);
+        try {
+            //set the new info in a new variable
+            const updateResidenceInfo = {
+                ...residenceInfo,
+                address: {
+                    streetAddress: data.streetAddress,
+                    unit: data.unit,
+                    postalCode: data.postalCode,
+                    city: data.city,
+                    province: data.province,
+                    country: data.country
+                }
+            };
+            //update the jotai
+            await setResidenceInfo(updateResidenceInfo);
 
-            try {
-                await registerResidence(residenceInfo);
-                router.push('/result')
+            //call api to store info
+            if (updateResidenceInfo.address.streetAddress) {
+                await registerResidence(updateResidenceInfo);
+                router.push('/result');
             }
-            catch (err) {
-                console.log(err);
-            }
-        // }
+        } catch (err) {
+            console.log(err);
+        }
     }
+
     return (
         <>
             <Container className="flex">
