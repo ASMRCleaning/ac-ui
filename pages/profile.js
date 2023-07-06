@@ -4,8 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useAtom } from "jotai";
 import { customerInfoAtom } from "../store";
 import { getCustomerInfo, updateCustomerInfo } from "../lib/customer";
-import { useHistory } from "react-router-dom";
-
+import { useRouter } from "next/router";
 
 const Profile = () => {
     //control form information
@@ -19,7 +18,7 @@ const Profile = () => {
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
 
-    const history = useHistory(); 
+    const router = useRouter();
 
     useEffect(() => {
         //retrieve residence information when component mounts
@@ -39,6 +38,9 @@ const Profile = () => {
         fetchCustomer();
     }, []);
 
+    const handleRedirect = () => {
+        router.push("/userHome")
+    }
 
     async function submitForm(data) {
         const updateCustomer = {
@@ -62,10 +64,6 @@ const Profile = () => {
         }
     }
 
-    function enableField(e) {
-        e.preventDefault();
-        setDisable(false)
-    }
     return (
         <>
             <Container className="flex">
@@ -136,14 +134,15 @@ const Profile = () => {
                         <Col>
                             <Button variant="primary"
                                 className="btn btn-outline-info"
-                                type="submit"
-                                // onClick={() => history.push("/userHome")} 
+                                // type="submit"
+                                onClick={handleRedirect}
                                 style={{ padding: "10px", margin: "1px", width: "40%" }}> Back</Button>
                         </Col>
                         <Col>
                             <Button variant="primary"
                                 className="btn btn-outline-success"
                                 type="submit"
+                                
                                 style={{ padding: "10px", margin: "1px", width: "40%" }}>Save</Button>
                         </Col>
                     </Row>
