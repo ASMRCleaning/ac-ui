@@ -3,35 +3,16 @@ import { isAuthenticated, removeToken } from "../lib/authenticate";
 import { useRouter } from "next/router";
 import Link from 'next/link';
 import { useAtom } from "jotai";
-import { customerInfoAtom, userNameAtom } from "../store";
-import { getCustomerInfo } from "../lib/customer";
-
+import { userInfoAtom } from "../store";
 
 const Header = (props) => {
     //set userName global variable to show in header navbar
-    const [userName, setUserName] = useAtom(userNameAtom);
-    const [customerInfo, setCustomerInfo] = useAtom(customerInfoAtom);
+    const [userInfo, setUserInfo] = useAtom(userInfoAtom);
     const router = useRouter();
 
     function logout() {
         removeToken();
         router.push("/");
-    }
-
-    //load customer info to display their name in header
-    async function customer() {
-        try {
-            const customer = await getCustomerInfo(userName);
-            setCustomerInfo({
-                'userId': customer.userId,
-                'firstName': customer.firstName,
-                'lastName': customer.lastName
-            });
-            router.push('/userHome');
-        }
-        catch (err) {
-            console.log(err.message);
-        }
     }
 
     return (
@@ -93,7 +74,7 @@ const Header = (props) => {
                             <Nav.Item className="ml-auto">
                                 {!isAuthenticated() ? <Nav.Link href="/login">Login</Nav.Link> :
                                     <Nav.Item >
-                                        <NavDropdown  title={`Hi, ${customerInfo.firstName}`} id="basic-nav-dropdown">
+                                        <NavDropdown  title={`Hi, ${userInfo.firstName}`} id="basic-nav-dropdown">
                                              <NavDropdown.Item>  
                                                 <Link style={{ textDecoration: "none" }} href="/userHome"> User Home Page </Link></NavDropdown.Item>
                                             <NavDropdown.Item>

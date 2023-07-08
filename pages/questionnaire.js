@@ -156,7 +156,7 @@ const Questionnaire = () => {
               <Form.Control className={errors.den && "inputErrors"}{...register("den", { max: 10 })}
                 type="text"
                 id="den"
-                placeholder="Enter a number between 1 to 10" />
+                placeholder="Optional information" />
               <br />
               {errors.den?.type === "max" && (<Alert variant="danger">Den/Office must be less than or equal 10</Alert>)}
             </Form.Group>
