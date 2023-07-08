@@ -16,13 +16,19 @@ const Residence = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
+    const [hasResidence, setHasResidence] = useState(false);
 
     const router = useRouter();
+    
+    //get where login page comes from
+    // const source = sessionStorage.getItem('source');
 
     // Check the object changes
     // useEffect(() => {
     //     console.log(residenceInfo);
     // }, [residenceInfo]);
+
+
 
     useEffect(() => {
         //retrieve residence information when the component mounts
@@ -42,21 +48,24 @@ const Residence = () => {
                     den: data.residence.den,
                     frequency: data.residence.frequency,
                     address: {
-                        streetAddress: data.residence.address.streetAddress,
-                        unit: data.residence.address.unit,
-                        postalCode: data.residence.address.postalCode,
-                        city: data.residence.address.city,
-                        province: data.residence.address.province,
-                        country: data.residence.address.country
+                        streetAddress: data.residence.address?.streetAddress,
+                        unit: data.residence.address?.unit,
+                        postalCode: data.residence.address?.postalCode,
+                        city: data.residence.address?.city,
+                        province: data.residence.address?.province,
+                        country: data.residence.address?.country
                     }
                 });
                 //set the value retrieve from API to variables to show to user
-                setValue("streetAddress", data.residence.address.streetAddress);
-                setValue("unit", data.residence.address.unit);
-                setValue("postalCode", data.residence.address.postalCode);
-                setValue("city", data.residence.address.city);
-                setValue("province", data.residence.address.province);
-                setValue("country", data.residence.address.country);
+                setValue("streetAddress", data.residence.address?.streetAddress);
+                setValue("unit", data.residence.address?.unit);
+                setValue("postalCode", data.residence.address?.postalCode);
+                setValue("city", data.residence.address?.city);
+                setValue("province", data.residence.address?.province);
+                setValue("country", data.residence.address?.country);
+
+                //control if user has or not residence to perform edit data or redirect to residence to create a new one
+                setHasResidence(true);
             }
         }
 
@@ -68,59 +77,38 @@ const Residence = () => {
     }
 
     const handleRedirectQ = () => {
-        router.push("/questionnaire")
+        router.push("/residence")
     }
 
+    console.log(hasResidence);
     async function submitForm(data) {
-        //add a new register of residence came from questionnaire page
-        if (residenceInfo.address.streetAddress === "") {
-            try {
-                //set the new info in a new variable
-                const updateResidenceInfo = {
-                    ...residenceInfo,
-                    address: {
-                        streetAddress: data.streetAddress,
-                        unit: data.unit,
-                        postalCode: data.postalCode,
-                        city: data.city,
-                        province: data.province,
-                        country: data.country
-                    }
-                };
-                //update the jotai
-                await setResidenceInfo(updateResidenceInfo);
+        //set the new info in a new variable
+        const updateResidenceInfo = {
+            ...residenceInfo,
+            address: {
+                streetAddress: data.streetAddress,
+                unit: data.unit,
+                postalCode: data.postalCode,
+                city: data.city,
+                province: data.province,
+                country: data.country
+            }
+        };
 
+        //update the jotai
+        await setResidenceInfo(updateResidenceInfo);
+
+        if (!hasResidence) {
+            try {
                 //call api to store info
                 await registerResidence(updateResidenceInfo);
                 router.push('/result');
 
-                //call api to store info
-                // if (updateResidenceInfo.address.streetAddress) {
-                //     await registerResidence(updateResidenceInfo);
-                //     router.push('/result');
-                // }
-            } catch (err) {
-                console.log(err);
-            }
+            } catch (err) { console.log(err); }
         }
         //update existing data 
         else {
             try {
-                //set the new info in a new variable
-                const updateResidenceInfo = {
-                    ...residenceInfo,
-                    address: {
-                        streetAddress: data.streetAddress,
-                        unit: data.unit,
-                        postalCode: data.postalCode,
-                        city: data.city,
-                        province: data.province,
-                        country: data.country
-                    }
-                };
-                //update the jotai
-                await setResidenceInfo(updateResidenceInfo);
-
                 //call api to store info
                 const res = await updateResidence(updateResidenceInfo);
                 console.log("goes to update");
@@ -129,21 +117,20 @@ const Residence = () => {
                 setResModal(res);
                 setShowModal(true);
 
-            } catch (err) {
-                console.log(err);
-            }
+            } 
+            catch (err) { console.log(err); }
         }
     }
 
     return (
         <>
             <Container className="flex">
-                {residenceInfo.houseType === "" || residenceInfo.houseType === null || residenceInfo === null ?
+                {!hasResidence && !residenceInfo ?
                     <Row>
                         <Card>
                             <Card.Header>
                                 <h3 style={{ textAlign: "center", fontSize: "2.5rem" }}>
-                                    Residence information
+                                    Residence Address
                                 </h3>
                             </Card.Header>
                             <Card.Body>
@@ -170,13 +157,9 @@ const Residence = () => {
                             <Image src="/residence-2.jpg" style={{ height: "10%", width: "105%" }} />
                         </Row>
                         <br />
-                        {residenceInfo === null ?
                             <Row>
-                                <p style={{ fontWeight: 'bold', fontSize: '2rem' }}>  Please provide you residence information</p>
-                            </Row> :
-                            <Row>
-                                <p style={{ fontWeight: 'bold', fontSize: '2rem' }}>  Check your residence information</p>
-                            </Row>}
+                                 <p style={{ fontWeight: 'bold', fontSize: '2rem', textAlign: "center" }}>  Residence Address </p>
+                            </Row> 
                         <br />
                         <Form onSubmit={handleSubmit(submitForm)} className="container mt-3 mb-3">
                             <Row className="mb-6">
@@ -270,25 +253,22 @@ const Residence = () => {
                                         onClick={handleRedirect}
                                         style={{ padding: "15px", margin: "1px", width: "50%" }}> Back</Button>
                                 </Col>
-                                {residenceInfo.address.streetAddress === "" ?
+                                {residenceInfo.address?.streetAddress === "" ?
                                     <Col className="col col-sm-3">
                                         <Button variant="primary"
                                             className="btn btn-outline-success"
                                             type="submit"
                                             disable={Object.keys(errors).length > 0}
                                             style={{ padding: "15px", margin: "1px", width: "50%" }}>Submit</Button>
-                                    </Col>:
-                                                                    <Col className="col col-sm-3">
-                                                                    <Button variant="primary"
-                                                                        className="btn btn-outline-success"
-                                                                        type="submit"
-                                                                        disable={Object.keys(errors).length > 0}
-                                                                        style={{ padding: "15px", margin: "1px", width: "50%" }}>Save</Button>
-                                                                </Col>
-                                        }
-
-
-
+                                    </Col> :
+                                    <Col className="col col-sm-3">
+                                        <Button variant="primary"
+                                            className="btn btn-outline-success"
+                                            type="submit"
+                                            disable={Object.keys(errors).length > 0}
+                                            style={{ padding: "15px", margin: "1px", width: "50%" }}>Save</Button>
+                                    </Col>
+                                }
                             </Row>
                         </Form>
                     </Container>

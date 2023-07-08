@@ -1,22 +1,35 @@
 import React from "react";
 import { Container, Card, Button, Row, Col } from "react-bootstrap";
-import Link from "next/link";
+import { useRouter } from "next/router";
+import { isAuthenticated } from "../lib/authenticate";
 
 const MainCard = (props) => {
+  const router = useRouter();
+  const userFound = isAuthenticated();
+
+    // Store where the redirect login page comes from to then redirect to correct page
+  const handleSourceRedirect = () => {
+    sessionStorage.setItem('source', 'questionnaire');
+
+    if (userFound) { router.push('/residence'); }
+    else { router.push('/login'); }
+
+  };
+
   return (
     <>
       <Card className="col-lg-12" style={{ width: "100%" }}>
-          <Card.Header>
-            <h3 style={{ textAlign: "center", fontSize: "2.5rem" }}>
-              {props.title}
-            </h3>
-          </Card.Header>
-          <Card.Body>
-            <p style={{ fontSize: "1.5rem", textAlign: "center" }}>
-             {props.body}
-            </p>
-          </Card.Body>
-          <Container fluid>
+        <Card.Header>
+          <h3 style={{ textAlign: "center", fontSize: "2.5rem" }}>
+            {props.title}
+          </h3>
+        </Card.Header>
+        <Card.Body>
+          <p style={{ fontSize: "1.5rem", textAlign: "center" }}>
+            {props.body}
+          </p>
+        </Card.Body>
+        <Container fluid>
           <Row>
             <Col>
               <div style={{ position: "relative", paddingTop: "50.25%" }}>
@@ -41,20 +54,18 @@ const MainCard = (props) => {
                     zIndex: 1,
                   }}
                 >
-                  <Link href="/questionnaire"> 
-                    <Button 
+                    <Button
                       variant="outline-success"
                       style={{ fontSize: "2.5rem", padding: "1rem 2rem" }}
-                    >
+                      onClick={handleSourceRedirect}>
                       Get a free quote here
                     </Button>
-                  </Link>
                 </div>
               </div>
             </Col>
           </Row>
         </Container>
-        </Card>
+      </Card>
     </>
   );
 };

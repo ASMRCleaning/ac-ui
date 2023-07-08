@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const Result = () =>{
+    const userFound = isAuthenticated();
+
+    useEffect(() =>{
+        sessionStorage.setItem('source', '');
+    });
+
     return(
         <>
-        <h4 > Sorry... We're working on that! Check it late! </h4>
+        <h4 >We're working on that! <br/>
+        <h5> Shows the suggesting of cleaning type and </h5>Check it late! </h4>
         </>
     );
 }

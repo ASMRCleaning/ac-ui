@@ -3,35 +3,16 @@ import { isAuthenticated, removeToken } from "../lib/authenticate";
 import { useRouter } from "next/router";
 import Link from 'next/link';
 import { useAtom } from "jotai";
-import { customerInfoAtom, userNameAtom } from "../store";
-import { getCustomerInfo } from "../lib/customer";
-
+import { customerInfoAtom } from "../store";
 
 const Header = (props) => {
     //set userName global variable to show in header navbar
-    const [userName, setUserName] = useAtom(userNameAtom);
     const [customerInfo, setCustomerInfo] = useAtom(customerInfoAtom);
     const router = useRouter();
 
     function logout() {
         removeToken();
         router.push("/");
-    }
-
-    //load customer info to display their name in header
-    async function customer() {
-        try {
-            const customer = await getCustomerInfo(userName);
-            setCustomerInfo({
-                'userId': customer.userId,
-                'firstName': customer.firstName,
-                'lastName': customer.lastName
-            });
-            router.push('/userHome');
-        }
-        catch (err) {
-            console.log(err.message);
-        }
     }
 
     return (

@@ -1,11 +1,10 @@
+import  React, { useState } from "react";
 import { Card, Form, Alert, Button, Container } from "react-bootstrap";
-import { useEffect, useState } from "react";
 import { authenticateUser } from "../lib/authenticate";
 import { useRouter } from "next/router";
 import { useAtom } from "jotai";
-import { userNameAtom, customerInfoAtom, residenceInfoAtom } from "../store";
+import { customerInfoAtom, residenceInfoAtom } from "../store";
 import { getCustomerInfo } from "../lib/customer";
-import { registerResidence } from "../lib/residence";
 
 export default function Login(props) {
   const [user, setUser] = useState("");
@@ -13,7 +12,6 @@ export default function Login(props) {
   const [warning, setWarning] = useState("");
 
   //global variable to store customer information and get userName
-  const [userName, setUserName] = useAtom(userNameAtom);
   const [customerInfo, setCustomerInfo] = useAtom(customerInfoAtom);
   const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
 
@@ -34,20 +32,6 @@ export default function Login(props) {
   //   console.log(`Residence info: ${residenceInfo.houseType}`);
   // }, [residenceInfo.houseType]);
 
-  // useEffect(() => {
-  //   const source = sessionStorage.getItem('source');
-  //   if (source === 'questionnaire') {
-  //     // Redirect to the home page after login
-  //     router.push('/residenceAddress');
-  //   } else {
-  //     // Redirect to a default page or display an error message
-  //     router.push('/userHome');
-  //   }
-
-    // Clear the session storage value after use
-  //   sessionStorage.removeItem('source');
-  // }, []);
-
   async function submitForm(e) {
     e.preventDefault();
 
@@ -57,30 +41,18 @@ export default function Login(props) {
     }
     try {
       //get the userName
-      const username = await authenticateUser(user, password)
-      setUserName(username);
-      //TODO see better practice on that and why first call fail
+      await authenticateUser(user, password)
+  
       const customer = await getCustomerInfo();
       setCustomerInfo({
-        userId: customer.userId,
-        firstName: customer.firstName,
-        lastName: customer.lastName
+        username: customer.user.username,
+        firstName: customer.user.firstName,
+        lastName: customer.user.lastName
       });
-      // check if user has residence info to send to API side due to questionnaire form
-        // if(residenceInfo){
-        //   try{
-        //     const res = await registerResidence(residenceInfo);
-        //   }
-        //   catch(err){
-        //     console.log(err)
-        //   }
-        //   router.push('/residenceAddress');
-        // }
-        // else{
-        //   router.push('/userHome');
-        // }
 
-        router.push("/residenceAddress");
+      if (source === "questionnaire") { router.push("/residence"); }
+      else { router.push("/userHome"); }
+
     }
     catch (err) {
       setWarning(err.message);
