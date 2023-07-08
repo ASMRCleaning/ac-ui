@@ -1,7 +1,4 @@
-import { atom} from "jotai";
-
-//store userName 
-export const userNameAtom = atom();
+import { atom } from "jotai";
 
 //store customer information
 export const customerInfoAtom = atom({
