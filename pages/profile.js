@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Container, Col, Row, Image, Form, Alert, Button, Modal } from "react-bootstrap";
 import { useForm } from 'react-hook-form';
 import { useAtom } from "jotai";
-import { customerInfoAtom } from "../store";
-import { getCustomerInfo, updateCustomerInfo } from "../lib/customer";
+import { userInfoAtom } from "../store";
+import { updateCustomerInfo } from "../lib/customer";
+import { getUserInfo } from "../lib/user";
 import { useRouter } from "next/router";
 
 const Profile = () => {
@@ -11,7 +12,7 @@ const Profile = () => {
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
 
     //global variable defined in store.js
-    const [customerInfo, setCustomerInfo] = useAtom(customerInfoAtom);
+    const [userInfo, setUserInfoAtom] = useAtom(userInfoAtom);
 
     // const password = watch('password');
     // const password2 = watch('password2');
@@ -24,10 +25,10 @@ const Profile = () => {
         //retrieve residence information when component mounts
         async function fetchCustomer() {
             //calls API GET: customer 
-            const data = await getCustomerInfo();
+            const data = await getUserInfo();
 
             //set info to jotai
-            setCustomerInfo({
+            setUserInfoAtom({
                 username: data.user.username,
                 firstName: data.user.firstName,
                 lastName: data.user.lastName,
@@ -49,7 +50,7 @@ const Profile = () => {
         };
 
         //update jotai customer object
-        await setCustomerInfo(updateCustomer);
+        await setUserInfoAtom(updateCustomer);
 
         //call customer API to stores info
         try {
@@ -78,7 +79,7 @@ const Profile = () => {
                             <Form.Control type="text"
                                 id="user"
                                 name="user"
-                                value={customerInfo.username}
+                                value={userInfo.username}
                                 disabled="true" />
                         </Form.Group>
                     </Row>

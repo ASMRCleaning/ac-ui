@@ -3,8 +3,8 @@ import { Card, Form, Alert, Button, Container } from "react-bootstrap";
 import { authenticateUser } from "../lib/authenticate";
 import { useRouter } from "next/router";
 import { useAtom } from "jotai";
-import { customerInfoAtom, residenceInfoAtom } from "../store";
-import { getCustomerInfo } from "../lib/customer";
+import { userInfoAtom, residenceInfoAtom } from "../store";
+import { getUserInfo } from "../lib/user";
 
 export default function Login(props) {
   const [user, setUser] = useState("");
@@ -12,7 +12,7 @@ export default function Login(props) {
   const [warning, setWarning] = useState("");
 
   //global variable to store customer information and get userName
-  const [customerInfo, setCustomerInfo] = useAtom(customerInfoAtom);
+  const [userInfo, setuserInfo] = useAtom(userInfoAtom);
   const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
 
   const router = useRouter();
@@ -25,8 +25,8 @@ export default function Login(props) {
   // }, [userName]);
 
   // useEffect(() => {
-  //   console.log(`customer was changed to: ${customerInfo.firstName}`);
-  // }, [customerInfo.firstName]);
+  //   console.log(`customer was changed to: ${userInfo.firstName}`);
+  // }, [userInfo.firstName]);
 
   // useEffect(() => {
   //   console.log(`Residence info: ${residenceInfo.houseType}`);
@@ -43,14 +43,15 @@ export default function Login(props) {
       //get the userName
       await authenticateUser(user, password)
   
-      const customer = await getCustomerInfo();
-      setCustomerInfo({
+      const customer = await getUserInfo();
+      setuserInfo({
         username: customer.user.username,
         firstName: customer.user.firstName,
-        lastName: customer.user.lastName
+        lastName: customer.user.lastName,
+        role: customer.role,
       });
 
-      if (source === "questionnaire") { router.push("/residence"); }
+      if (source === "questionnaire" && userInfo.role === "customer") { router.push("/residence"); }
       else { router.push("/userHome"); }
 
     }
