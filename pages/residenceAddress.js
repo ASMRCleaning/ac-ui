@@ -28,8 +28,6 @@ const Residence = () => {
     //     console.log(residenceInfo);
     // }, [residenceInfo]);
 
-
-
     useEffect(() => {
         //retrieve residence information when the component mounts
         async function fetchResidence() {
@@ -125,7 +123,7 @@ const Residence = () => {
     return (
         <>
             <Container className="flex">
-                {!hasResidence && !residenceInfo ?
+                {!hasResidence && !residenceInfo.houseType ?
                     <Row>
                         <Card>
                             <Card.Header>
@@ -150,8 +148,7 @@ const Residence = () => {
                                 </Row>
                             </Card.Body>
                         </Card>
-                    </Row>
-                    :
+                    </Row> :
                     <Container className="flex">
                         <Row className="flex">
                             <Image src="/residence-2.jpg" style={{ height: "10%", width: "105%" }} />
