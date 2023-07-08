@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 
 const Result = () =>{
-    const userFound = isAuthenticated();
-
     useEffect(() =>{
         sessionStorage.setItem('source', '');
     });
