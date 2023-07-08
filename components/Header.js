@@ -3,11 +3,11 @@ import { isAuthenticated, removeToken } from "../lib/authenticate";
 import { useRouter } from "next/router";
 import Link from 'next/link';
 import { useAtom } from "jotai";
-import { customerInfoAtom } from "../store";
+import { userInfoAtom } from "../store";
 
 const Header = (props) => {
     //set userName global variable to show in header navbar
-    const [customerInfo, setCustomerInfo] = useAtom(customerInfoAtom);
+    const [userInfo, setUserInfo] = useAtom(userInfoAtom);
     const router = useRouter();
 
     function logout() {
@@ -74,7 +74,7 @@ const Header = (props) => {
                             <Nav.Item className="ml-auto">
                                 {!isAuthenticated() ? <Nav.Link href="/login">Login</Nav.Link> :
                                     <Nav.Item >
-                                        <NavDropdown  title={`Hi, ${customerInfo.firstName}`} id="basic-nav-dropdown">
+                                        <NavDropdown  title={`Hi, ${userInfo.firstName}`} id="basic-nav-dropdown">
                                              <NavDropdown.Item>  
                                                 <Link style={{ textDecoration: "none" }} href="/userHome"> User Home Page </Link></NavDropdown.Item>
                                             <NavDropdown.Item>
