@@ -15,16 +15,16 @@ const UserHome = () => {
 
         switch (cardMenu){
             case 1:
-                router.push('/manager/booking');
+                router.push('/employee/booking');
                 break;
             case 2:
-                router.push('/manager/customer');
+                router.push('/employee/customer');
                 break;
             case 3:
-                router.push('/manager/employee');
+                router.push('/employee/employee');
                 break;
         }
-        // router.push('/manager/customer');
+        // router.push('/employee/customer');
     }
 
     //Remove the token to browser cookie
@@ -45,7 +45,7 @@ const UserHome = () => {
                     <Col>
                         <Card id="home-products" style={{ width: '25rem' }} onClick={ () => handleCustomerRedirect(1)}>
                             <Card.Header style={{ fontWeight: 'bold', fontSize: '2rem', textAlign: "center" }}>Bookings</Card.Header>
-                            <Card.Img src="/manager/booking_3.jpg" style={{ width: '100%' }} />
+                            <Card.Img src="/employee/booking_3.jpg" style={{ width: '100%' }} />
                             <Card.Body>
                                 <Card.Text style={{ fontSize: "1.5rem" }}>
                                     <h4>Create or manager bookings</h4>
@@ -56,7 +56,7 @@ const UserHome = () => {
                     <Col>
                         <Card id="home-booking" style={{ width: '25rem' }} onClick={ () =>handleCustomerRedirect(2)}>
                             <Card.Header style={{ fontWeight: 'bold', fontSize: '2rem', textAlign: "center" }}>Customers</Card.Header>
-                            <Card.Img src="/manager/customers_2.jpg" style={{ width: '100%' }} />
+                            <Card.Img src="/employee/customers_2.jpg" style={{ width: '100%' }} />
                             <Card.Body>
                                 <Card.Text style={{ fontSize: "10rem" }} >
                                     <h4>Create or manager customers</h4>
@@ -67,7 +67,7 @@ const UserHome = () => {
                     <Col>
                         <Card id="home-employees" style={{ width: '25rem' }} onClick={ () =>handleCustomerRedirect(3)}>
                             <Card.Header style={{ fontWeight: 'bold', fontSize: '2rem', textAlign: "center" }}>Employees</Card.Header>
-                            <Card.Img src="/manager/employee_2.jpg" style={{ width: '100%'}} />
+                            <Card.Img src="/employee/employee_2.jpg" style={{ width: '100%'}} />
                             <Card.Body>
                                 <Card.Text style={{ fontSize: "1.5rem", textAlign: "center" }} >
                                     <h4>Create or manager employees</h4>
