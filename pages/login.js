@@ -12,7 +12,7 @@ export default function Login(props) {
   const [warning, setWarning] = useState("");
 
   //global variable to store customer information and get userName
-  const [userInfo, setuserInfo] = useAtom(userInfoAtom);
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
   const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
 
   const router = useRouter();
@@ -43,16 +43,18 @@ export default function Login(props) {
       //get the userName
       await authenticateUser(user, password)
   
-      const customer = await getUserInfo();
-      setuserInfo({
-        username: customer.user.username,
-        firstName: customer.user.firstName,
-        lastName: customer.user.lastName,
-        role: customer.role,
-      });
+      // const customer = await getUserInfo();
 
-      if (source === "questionnaire" && userInfo.role === "customer") { router.push("/residence"); }
-      else { router.push("/userHome"); }
+      // setUserInfo({
+      //   username: customer.user.username,
+      //   firstName: customer.user.firstName,
+      //   lastName: customer.user.lastName,
+      //   role: customer.role,
+      // });
+
+      // if (source === "questionnaire" && userInfo.role === "customer") { router.push("/residence"); }
+      // else { router.push("/userHome"); }
+      router.push('/userHome');
 
     }
     catch (err) {

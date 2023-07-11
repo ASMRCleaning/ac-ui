@@ -5,6 +5,8 @@ export const userInfoAtom = atom({
     'username': '',
     'firstName':'',
     'lastName':'',
+    'email':'',
+    'phone':'',
     'role':'',
 })
 
