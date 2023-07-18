@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { registerUser } from "../lib/authenticate";
 import { Form, Row, Button, Card, Alert, Col, Modal } from "react-bootstrap";
 import { useRouter } from "next/router";
@@ -22,6 +22,15 @@ const RegisterPage = () => {
 
     const router = useRouter();
 
+    const [isManager, setIsManager] = useState(false);
+
+    console.log(userInfo);
+    
+    useEffect(() =>{
+        //get if the user logged in is a manager or not
+        setIsManager(userInfo.role === "manager" ? true : false);
+    });
+
     //hit Back button
     const handleRedirect = () => {
         router.push("/userHome")
@@ -37,7 +46,7 @@ const RegisterPage = () => {
             phone: data.phone,
             password: data.password,
             password2: data.password2,
-            role: "customer"
+            role: data.role || "customer"
         };
         //set user info
         await setUserInfo(userData.username, userData.firstName, userData.lastName, userData.email, userData.phone, userData.role);
@@ -98,6 +107,23 @@ const RegisterPage = () => {
                         {errors.lastName?.type === "maxLength" && (<Alert variant="danger">Last Name must have maximum 100 character</Alert>)}
                     </Form.Group>
                 </Row>
+                <br />
+                {isManager && (
+                <>
+                <Row className="mb-9">
+                    <Form.Group className="col col-sm-9">
+                        <Form.Label>User View</Form.Label>
+                        <Form.Select className={errors.role && "inputErrors"} {...register("role", { required: true })} >
+                            <option value="">Select</option>
+                            <option value="customer">Customer</option>
+                            <option value="employee">Employee</option>
+                            <option value="manager">Manager</option>
+                        </Form.Select>
+                        <br />
+                        {errors.role && errors.frequency.role === "required" && (<Alert variant="danger">User view is required</Alert>)}
+                    </Form.Group>
+                </Row>
+                </>)}
                 <br />
                 <Row className="mb-9">
                     <Form.Group className="col col-sm-9">
@@ -186,9 +212,9 @@ const RegisterPage = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Link href="/userHome">
-                    <Button variant="primary" onClick={() => setShowModal(false)}>
-                        Close
-                    </Button>
+                        <Button variant="primary" onClick={() => setShowModal(false)}>
+                            Close
+                        </Button>
                     </Link>
                 </Modal.Footer>
             </Modal>
