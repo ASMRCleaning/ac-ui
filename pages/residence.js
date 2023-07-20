@@ -2,16 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Container, Col, Row, Image, Form, Alert, Button, Modal, Card } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAtom } from "jotai";
-import { residenceInfoAtom } from "../store";
+import { residenceInfoAtom, userInfoAtom } from "../store";
 import { useRouter } from "next/router";
 import { getResidence, removeResidence, updateResidence } from "../lib/residence";
 
 const Residence = () => {
+    //get the session 
+    const source = sessionStorage.getItem("source");
+
     //control form information
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
 
     //global variable defined in store.js
     const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
+    const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
@@ -60,7 +64,11 @@ const Residence = () => {
 
     //hit Back button
     const handleRedirect = () => {
-        router.push("/userHome")
+        //if manager go back to previous page
+        source === "managerC" ? router.push("/employee/customer") : router.push("/userHome");
+
+        //clear the session storage value
+        sessionStorage.removeItem('source');        
     }
 
     //hit Delete button
