@@ -19,21 +19,6 @@ export default function Login(props) {
 
   const router = useRouter();
 
-  //get where login page comes from
-  // const source = sessionStorage.getItem('source');
-  // useEffect(() => {
-  //   console.log(`userName was changed to: ${userName}`);
-  // }, [userName]);
-
-  // useEffect(() => {
-  //   console.log(`customer was changed to: ${userInfo.firstName}`);
-  // }, [userInfo.firstName]);
-
-  // useEffect(() => {
-  //   console.log(`Residence info: ${residenceInfo.houseType}`);
-  // }, [residenceInfo.houseType]);
-
-
   //login user
   async function submitForm(data) {
     try {
@@ -108,7 +93,7 @@ export default function Login(props) {
           <Button href="/register" variant="primary" className="btn btn-outline-info btn-sm" style={{ padding: "10px", height: "40px", width: "180px" }} type="submit">
             Create account
           </Button>
-          <br /> {/* This helps the footer go down so that it looks clean */}
+          <br />
           <br />
         </Row>
       </Form>

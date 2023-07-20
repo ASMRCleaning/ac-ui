@@ -8,6 +8,8 @@ import { residenceInfoAtom } from "../store";
 import { useForm } from 'react-hook-form';
 
 const Residence = () => {
+    //get the session 
+    const source = sessionStorage.getItem("source");
 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
@@ -71,7 +73,11 @@ const Residence = () => {
     }, []);
 
     const handleRedirect = () => {
-        router.push("/userHome")
+        //if manager go back to previous page
+        source === "managerC" ? router.push("/employee/customer") : router.push("/userHome");
+
+        //clear the session storage value
+        sessionStorage.removeItem('source');
     }
 
     const handleRedirectQ = () => {

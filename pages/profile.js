@@ -8,6 +8,9 @@ import { getUserInfo } from "../lib/user";
 import { useRouter } from "next/router";
 
 const Profile = () => {
+    //get the session 
+    const source = sessionStorage.getItem("source");
+
     //control form information
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
 
@@ -40,7 +43,11 @@ const Profile = () => {
     }, []);
 
     const handleRedirect = () => {
-        router.push("/userHome")
+        //if manager go back to previous page
+        source === "managerC" ? router.push("/employee/customer") : router.push("/login");
+
+        //clear the session storage value
+        sessionStorage.removeItem('source');
     }
 
     async function submitForm(data) {
@@ -54,7 +61,7 @@ const Profile = () => {
 
         //call customer API to stores info
         try {
-           const res =  await updateCustomerInfo(updateCustomer);
+            const res = await updateCustomerInfo(updateCustomer);
 
             //show modal with update result
             setResModal(res);
@@ -143,7 +150,7 @@ const Profile = () => {
                             <Button variant="primary"
                                 className="btn btn-outline-success"
                                 type="submit"
-                                
+
                                 style={{ padding: "10px", margin: "1px", width: "40%" }}>Save</Button>
                         </Col>
                     </Row>
@@ -154,7 +161,7 @@ const Profile = () => {
                     </Modal.Header>
                     <Modal.Body>
                         {resModal && resModal.status === "ok" ? (<p>Your profile has been successfully updated.</p>)
-                                                              : (<p>Something wrong happened, please try again later</p>)
+                            : (<p>Something wrong happened, please try again later</p>)
                         }
                     </Modal.Body>
                     <Modal.Footer>

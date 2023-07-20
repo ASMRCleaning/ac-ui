@@ -1,24 +1,26 @@
 import React, { useState } from "react";
 import { Row, Col, Button } from "react-bootstrap";
+import { FcSearch, FcEditImage } from "react-icons/fc"
+import { AiTwotoneDelete } from "react-icons/ai";
+import IconTipName from "../components/IconTipName";
 import Link from "next/link";
+import { useAtom } from "jotai";
+import { userInfoAtom } from "../store";
 import { useRouter } from "next/router";
-import { FcHome, FcSearch } from 'react-icons/fc';
-import { FaAddressBook } from 'react-icons/fa';
-import IconTipName from "../../components/IconTipName";
 
 const customers = [
-    { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com' },
-    { id: 3, firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com' },
+    { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Green Cleaning' },
+    { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Cleaning' },
+    { id: 3, firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Deep Cleaning' },
 ];
 
-const Customer = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+const Subscription = () => {
     const router = useRouter();
+    const [searchTerm, setSearchTerm] = useState('');
 
-    const [showModal, setShowModal] = useState(false);
-    const [resModal, setResModal] = useState(null);
-
+    //global variable from store.js
+    const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+    
     const filteredCustomers = customers.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
         customer.lastName.toLocaleLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -29,12 +31,7 @@ const Customer = () => {
 
     //hit Back button
     const handleRedirect = () => {
-        router.push("/employee/userHome")
-    }
-
-    //store information about the previous page to use in next page
-    const handlePreviousSession = () => {
-        sessionStorage.setItem('source', 'managerC');
+        userInfo.role === "customer" ? router.push("/userHome") : router.push("/employee/userHome")
     }
 
     return (
@@ -50,15 +47,11 @@ const Customer = () => {
                     />
                 </Col>
                 <Col className="col col-sm-2" style={{ paddingTop: "10px" }}>
-                    <Link style={{ textDecoration: "none" }} href='/register'>
-                        <Button className="btn btn-outline-success btn-sm"
-                            variant="primary"
-                            style={{ padding: "10px", height: "40px", width: "180px" }}
-                            type="submit"
-                            onClick={handlePreviousSession}>
-                            Create customer
+                    {/* <Link href="/register"> */}
+                        <Button variant="primary" className="btn btn-outline-success btn-sm" style={{ padding: "10px", height: "40px", width: "180px" }} type="submit">
+                            Create Subscription
                         </Button>
-                    </Link>
+                    {/* </Link> */}
                 </Col>
                 <Col className="col col-sm-2" style={{ paddingTop: "10px" }}>
                     <Button className="btn btn-outline-info btn-sm"
@@ -75,10 +68,12 @@ const Customer = () => {
                 <table className="table table-striped">
                     <thead>
                         <tr>
-                            <th>Customer ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>email</th>
+                            <th> Subscription ID </th>
+                            <th> First Name </th>
+                            <th> Last Name </th>
+                            <th> Service </th>
+                            <th> Start Date </th>
+                            <th> End Date </th>
                             <th> </th>
                             <th> </th>
                             <th> </th>
@@ -90,23 +85,18 @@ const Customer = () => {
                                 <td>{customer.id}</td>
                                 <td>{customer.firstName}</td>
                                 <td>{customer.lastName}</td>
-                                <td>{customer.email}</td>
+                                <td>{customer.service}</td>
+                                <td>{customer.start_date}</td>
+                                <td>{customer.end_date}</td>
                                 <td>
-                                    <Link href='/profile' onClick={handlePreviousSession}>
-                                        <IconTipName Icon={FcSearch} size={30} name="Details" />
-                                    </Link>
+                                    <IconTipName Icon={FcSearch} size={30} name="Details" />
                                 </td>
                                 <td>
-                                    <Link href='/residence' onClick={handlePreviousSession}>
-                                        <IconTipName Icon={FcHome} size={30} name="Residence" />
-                                    </Link>
+                                    <IconTipName Icon={FcEditImage} size={30} name="Edit" />
                                 </td>
                                 <td>
-                                    <Link href='/residenceAddress' onClick={handlePreviousSession}>
-                                        <IconTipName Icon={FaAddressBook} size={30} name="Address"/>
-                                    </Link>
+                                    <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete" />
                                 </td>
-
                             </tr>
                         ))}
                     </tbody>
@@ -116,5 +106,4 @@ const Customer = () => {
     );
 }
 
-
-export default Customer
+export default Subscription

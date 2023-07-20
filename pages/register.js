@@ -8,6 +8,9 @@ import { userInfoAtom } from "../store";
 import Link from "next/link";
 
 const RegisterPage = () => {
+    //get the session 
+    const source = sessionStorage.getItem("source");
+
     //control form information
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
 
@@ -24,16 +27,18 @@ const RegisterPage = () => {
 
     const [isManager, setIsManager] = useState(false);
 
-    console.log(userInfo);
-    
-    useEffect(() =>{
+    useEffect(() => {
         //get if the user logged in is a manager or not
         setIsManager(userInfo.role === "manager" ? true : false);
     });
 
     //hit Back button
     const handleRedirect = () => {
-        router.push("/userHome")
+        //if manager go back to previous page
+        source === "managerC" ? router.push("/employee/customer") : router.push("/login");
+
+        //clear the session storage value
+        sessionStorage.removeItem('source');
     }
 
     //update residence information
@@ -60,6 +65,9 @@ const RegisterPage = () => {
             setShowModal(true);
         }
         catch (err) { console.log(err); }
+
+        //clear the session storage value
+        sessionStorage.removeItem('source');
     }
 
     return (
@@ -109,21 +117,21 @@ const RegisterPage = () => {
                 </Row>
                 <br />
                 {isManager && (
-                <>
-                <Row className="mb-9">
-                    <Form.Group className="col col-sm-9">
-                        <Form.Label>User View</Form.Label>
-                        <Form.Select className={errors.role && "inputErrors"} {...register("role", { required: true })} >
-                            <option value="">Select</option>
-                            <option value="customer">Customer</option>
-                            <option value="employee">Employee</option>
-                            <option value="manager">Manager</option>
-                        </Form.Select>
-                        <br />
-                        {errors.role && errors.frequency.role === "required" && (<Alert variant="danger">User view is required</Alert>)}
-                    </Form.Group>
-                </Row>
-                </>)}
+                    <>
+                        <Row className="mb-9">
+                            <Form.Group className="col col-sm-9">
+                                <Form.Label>User View</Form.Label>
+                                <Form.Select className={errors.role && "inputErrors"} {...register("role", { required: true })} >
+                                    <option value="">Select</option>
+                                    <option value="customer">Customer</option>
+                                    <option value="employee">Employee</option>
+                                    <option value="manager">Manager</option>
+                                </Form.Select>
+                                <br />
+                                {errors.role && errors.frequency.role === "required" && (<Alert variant="danger">User view is required</Alert>)}
+                            </Form.Group>
+                        </Row>
+                    </>)}
                 <br />
                 <Row className="mb-9">
                     <Form.Group className="col col-sm-9">
