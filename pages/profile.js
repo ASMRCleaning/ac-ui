@@ -44,7 +44,11 @@ const Profile = () => {
 
     const handleRedirect = () => {
         //if manager go back to previous page
-        source === "managerC" ? router.push("/employee/customer") : router.push("/login");
+        if(source === "managerC")
+            router.push("/employee/customer")
+        else if(source === "managerE")
+            router.push("/employee/employee")
+        else router.push("/login");
 
         //clear the session storage value
         sessionStorage.removeItem('source');

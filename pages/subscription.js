@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Row, Col, Button } from "react-bootstrap";
-import { FcSearch, FcEditImage } from "react-icons/fc"
+import { Row, Col, Button, Modal } from "react-bootstrap";
+import { FcSearch } from "react-icons/fc"
 import { AiTwotoneDelete } from "react-icons/ai";
 import IconTipName from "../components/IconTipName";
-import Link from "next/link";
 import { useAtom } from "jotai";
 import { userInfoAtom } from "../store";
 import { useRouter } from "next/router";
@@ -17,13 +16,51 @@ const customers = [
 const Subscription = () => {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
+    const [showModalD, setShowModalD] = useState(false);
 
     //global variable from store.js
     const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-    
+
     const filteredCustomers = customers.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
         customer.lastName.toLocaleLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    //hit Delete button
+    const showDeleteModal = () => {
+        setShowModalD(true);
+    }
+
+    const closeDeleteModal = () => {
+        setShowModalD(false);
+    }
+
+    //delete residence data
+    async function handleDeleteRes() {
+        try {
+            // await removeResidence();
+
+            closeDeleteModal()
+
+            // Reset the form fields
+            // setValue("houseType", "");
+            // setValue("size", "");
+            // setValue("empty", false);
+            // setValue("furnished", false);
+            // setValue("pet", false);
+            // setValue("bedroom", "");
+            // setValue("bathroom", "");
+            // setValue("den", "");
+            // setValue("frequency", "");
+
+            // Clear the residenceInfo atom
+            // setResidenceInfo({});
+
+            // Set hasResidence to false
+            // setHasResidence(false);
+        }
+
+        catch (err) { console.log(err); }
+    }
 
     const handleSearch = e => {
         setSearchTerm(e.target.value);
@@ -48,9 +85,9 @@ const Subscription = () => {
                 </Col>
                 <Col className="col col-sm-2" style={{ paddingTop: "10px" }}>
                     {/* <Link href="/register"> */}
-                        <Button variant="primary" className="btn btn-outline-success btn-sm" style={{ padding: "10px", height: "40px", width: "180px" }} type="submit">
-                            Create Subscription
-                        </Button>
+                    <Button variant="primary" className="btn btn-outline-success btn-sm" style={{ padding: "10px", height: "40px", width: "180px" }} type="submit">
+                        Create Subscription
+                    </Button>
                     {/* </Link> */}
                 </Col>
                 <Col className="col col-sm-2" style={{ paddingTop: "10px" }}>
@@ -76,7 +113,7 @@ const Subscription = () => {
                             <th> End Date </th>
                             <th> </th>
                             <th> </th>
-                            <th> </th>
+                            {/* <th> </th> */}
                         </tr>
                     </thead>
                     <tbody>
@@ -92,16 +129,32 @@ const Subscription = () => {
                                     <IconTipName Icon={FcSearch} size={30} name="Details" />
                                 </td>
                                 <td>
-                                    <IconTipName Icon={FcEditImage} size={30} name="Edit" />
-                                </td>
-                                <td>
-                                    <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete" />
+                                    <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete"  onClick={showDeleteModal} />
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </Row>
+
+            {/* Delete modal */}
+            <Modal show={showModalD} onHide={() => setShowModalD(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete employee profile?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Do you want to delete this employee profile?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={closeDeleteModal}>
+                        No
+                    </Button>
+                    <Button variant="danger" onClick={handleDeleteRes}>
+                        Yes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <br />
         </>
     );
 }

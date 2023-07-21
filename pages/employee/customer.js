@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button, Modal } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import IconTipName from "../../components/IconTipName";
 import { FcHome, FcSearch } from 'react-icons/fc';
 import { FaAddressBook } from 'react-icons/fa';
-import IconTipName from "../../components/IconTipName";
+import { AiTwotoneDelete } from "react-icons/ai";
 
 const customers = [
     { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' },
@@ -13,15 +14,50 @@ const customers = [
 ];
 
 const Customer = () => {
-    const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
-
-    const [showModal, setShowModal] = useState(false);
-    const [resModal, setResModal] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [showModalD, setShowModalD] = useState(false);
 
     const filteredCustomers = customers.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
         customer.lastName.toLocaleLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    //hit Delete button
+    const showDeleteModal = () => {
+        setShowModalD(true);
+    }
+
+    const closeDeleteModal = () => {
+        setShowModalD(false);
+    }
+
+    //delete residence data
+    async function handleDeleteRes() {
+        try {
+            // await removeResidence();
+
+            closeDeleteModal()
+
+            // Reset the form fields
+            // setValue("houseType", "");
+            // setValue("size", "");
+            // setValue("empty", false);
+            // setValue("furnished", false);
+            // setValue("pet", false);
+            // setValue("bedroom", "");
+            // setValue("bathroom", "");
+            // setValue("den", "");
+            // setValue("frequency", "");
+
+            // Clear the residenceInfo atom
+            // setResidenceInfo({});
+
+            // Set hasResidence to false
+            // setHasResidence(false);
+        }
+
+        catch (err) { console.log(err); }
+    }
 
     const handleSearch = e => {
         setSearchTerm(e.target.value);
@@ -82,6 +118,7 @@ const Customer = () => {
                             <th> </th>
                             <th> </th>
                             <th> </th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -103,15 +140,36 @@ const Customer = () => {
                                 </td>
                                 <td>
                                     <Link href='/residenceAddress' onClick={handlePreviousSession}>
-                                        <IconTipName Icon={FaAddressBook} size={30} name="Address"/>
+                                        <IconTipName Icon={FaAddressBook} size={30} name="Address" />
                                     </Link>
                                 </td>
-
+                                <td>
+                                    <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete" onClick={showDeleteModal} />
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </Row>
+
+            {/* Delete modal */}
+            <Modal show={showModalD} onHide={() => setShowModalD(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete employee profile?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Do you want to delete this employee profile?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={closeDeleteModal}>
+                        No
+                    </Button>
+                    <Button variant="danger" onClick={handleDeleteRes}>
+                        Yes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <br />
         </>
     );
 }

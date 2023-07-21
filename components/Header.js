@@ -75,35 +75,21 @@ const Header = () => {
                                 {!isAuthenticated() ? <Nav.Link href="/login">Login</Nav.Link> :
                                     <Nav.Item >
                                         <NavDropdown title={`Hi, ${userInfo.firstName}`} id="basic-nav-dropdown">
-                                            {userInfo.role === "customer" && (<><NavDropdown.Item>
-                                                <Link style={{ textDecoration: "none" }} href="/userHome"> User Home Page </Link></NavDropdown.Item>
+                                            {userInfo.role === "customer" && (<>
+                                                <NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/residenceAddress">Address</Link></NavDropdown.Item>
+                                                <NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/booking"> Booking</Link>
+                                                </NavDropdown.Item>
                                                 <NavDropdown.Item>
                                                     <Link style={{ textDecoration: "none" }} href="/profile"> Profile </Link></NavDropdown.Item>
                                                 <NavDropdown.Item>
                                                     <Link style={{ textDecoration: "none" }} href="/residence">Residence</Link></NavDropdown.Item>
                                                 <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/residenceAddress">Address</Link></NavDropdown.Item>
-                                                <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/booking"> Booking</Link></NavDropdown.Item> </>)}
-                                            {/* {userInfo.role === "manager" && (<><NavDropdown.Item>
-                                                <Link style={{ textDecoration: "none" }} href="/employee/userHome"> User Home Page </Link></NavDropdown.Item>
-                                                <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/profile"> Profile </Link></NavDropdown.Item>
-                                                <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/employee/booking">Subscription</Link></NavDropdown.Item>
-                                                <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/employee/customer">Customer</Link></NavDropdown.Item>
-                                                <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/employee/employee"> Employees</Link></NavDropdown.Item>
-                                                <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/employee/booking"> Cleaning Service</Link></NavDropdown.Item></>)}
-                                            {userInfo.role === "employee" && (<><NavDropdown.Item>
-                                                <Link style={{ textDecoration: "none" }} href="/userHome"> User Home Page </Link></NavDropdown.Item>
-                                                <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/profile"> Profile </Link></NavDropdown.Item>
-                                                <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/employee/booking"> Cleaning Service</Link></NavDropdown.Item>
-                                            </>)} */}
+                                                    <Link style={{ textDecoration: "none" }} href="/userHome"> User Home Page </Link></NavDropdown.Item>
+                                            </>)}
+                                            <NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/employee/userHome"> User Home Page </Link></NavDropdown.Item>
                                             <NavDropdown.Item onClick={logout}> Logout</NavDropdown.Item>
                                         </NavDropdown>
                                     </Nav.Item>}
@@ -112,6 +98,7 @@ const Header = () => {
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
+                    {userInfo.role === "customer" ||  !isAuthenticated()  && (
                     <Nav.Item>
                         <Container className="d-grid gap-1">
                             <Link style={{ textDecoration: "none" }} href="/residence">
@@ -119,14 +106,8 @@ const Header = () => {
                             </Link>
                         </Container>
                     </Nav.Item>
+                    )}
                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    {/* <Form className="d-flex">
-                        <Form.Control className="form-control me-sm-2"
-                            type="search"
-                            placeholder="Search"
-                        />
-                        <Button className="btn btn-secondary my-2 my-sm-0">Search</Button>
-                    </Form> */}
                 </Nav >
             </Navbar >
         </>
