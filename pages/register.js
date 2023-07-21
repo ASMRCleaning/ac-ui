@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { registerUser } from "../lib/authenticate";
+import { isAuthenticated, registerUser } from "../lib/authenticate";
 import { Form, Row, Button, Card, Alert, Col, Modal } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -65,9 +65,6 @@ const RegisterPage = () => {
             setShowModal(true);
         }
         catch (err) { console.log(err); }
-
-        //clear the session storage value
-        sessionStorage.removeItem('source');
     }
 
     return (
@@ -219,11 +216,18 @@ const RegisterPage = () => {
                     {resModal && (<p>Your profile has been successfully created.</p>)}
                 </Modal.Body>
                 <Modal.Footer>
+                    {isAuthenticated() ? (
+                        <Link href="/employee/customer">
+                         <Button variant="primary" onClick={() => setShowModal(false)}>
+                            Close
+                        </Button>
+                        </Link>
+                    ):
                     <Link href="/userHome">
                         <Button variant="primary" onClick={() => setShowModal(false)}>
                             Close
                         </Button>
-                    </Link>
+                    </Link>}
                 </Modal.Footer>
             </Modal>
         </>
