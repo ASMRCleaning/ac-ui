@@ -84,7 +84,6 @@ const Residence = () => {
         router.push("/residence")
     }
 
-    console.log(hasResidence);
     async function submitForm(data) {
         //set the new info in a new variable
         const updateResidenceInfo = {
