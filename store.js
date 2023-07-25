@@ -1,4 +1,4 @@
-import { atom } from "jotai";
+import { atom } from 'jotai';
 
 //store customer information
 export const userInfoAtom = atom({
@@ -29,3 +29,18 @@ export const residenceInfoAtom = atom({
         'province': '',
         'country': '',}
 })
+
+//residenceAddress information 
+export const bookingInfoAtom = atom({
+    '_id': 0,
+    'employeeId': '',
+    'customerId': '',
+    'residenceId': '',
+    'status': '',
+    'serviceType': '',
+    'frequency': '',
+    'startDate': '',
+    'endDate': '',
+    'specification': '',
+})
+

@@ -1,29 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Button, Modal } from "react-bootstrap";
+import Link from "next/link";
 import { FcSearch } from "react-icons/fc"
 import { AiTwotoneDelete } from "react-icons/ai";
 import IconTipName from "../components/IconTipName";
 import { useAtom } from "jotai";
 import { userInfoAtom } from "../store";
 import { useRouter } from "next/router";
+import { getAllBooking, getBookingById } from "../lib/booking";
 
-const customers = [
-    { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Green Cleaning' },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Cleaning' },
-    { id: 3, firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Deep Cleaning' },
-];
+// const customers = [
+//     { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Green Cleaning' },
+//     { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Cleaning' },
+//     { id: 3, firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Deep Cleaning' },
+// ];
 
 const Subscription = () => {
     const router = useRouter();
+    const [bookings, setBookings] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModalD, setShowModalD] = useState(false);
 
     //global variable from store.js
     const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
-    const filteredCustomers = customers.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.lastName.toLocaleLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // const filteredCustomers = bookings.filter(booking => booking.firstName.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
+    // booking.lastName.toLocaleLowerCase().includes(searchTerm.toLowerCase())
+    // );
+
+    //store information about the previous page to use in next page
+    const handlePreviousSession = () => {
+       
+    }
+
+    useEffect(() => {
+        //retrieve residence information when component mounts
+        async function fetchBooking() {
+            try {
+                //calls API GET: all booking 
+                const data = await getAllBooking();
+                setBookings(data.bookings);
+            }
+            catch (err) {
+                console.error("Error fetching bookings: ", err);
+            }
+        }
+        fetchBooking();
+    }, []);
 
     //hit Delete button
     const showDeleteModal = () => {
@@ -71,6 +94,17 @@ const Subscription = () => {
         userInfo.role === "customer" ? router.push("/userHome") : router.push("/employee/userHome")
     }
 
+    //detail of a bookingId
+    const handleBookingDetails = async (id) => {
+        try {
+            sessionStorage.setItem('source', 'managerS');
+            router.push(`/booking/${id}`);
+        }
+        catch (err) {
+            console.error("Error to fetching booking by Id: ", err);
+        }
+
+    }
     return (
         <>
             <Row>
@@ -106,30 +140,35 @@ const Subscription = () => {
                     <thead>
                         <tr>
                             <th> Subscription ID </th>
-                            <th> First Name </th>
-                            <th> Last Name </th>
+                            <th> Customer </th>
                             <th> Service </th>
+                            <th> Frequency </th>
                             <th> Start Date </th>
                             <th> End Date </th>
+                            <th> employeeId </th>
+                            <th> Status </th>
                             <th> </th>
                             <th> </th>
                             {/* <th> </th> */}
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredCustomers.map(customer => (
-                            <tr key={customer.id}>
-                                <td>{customer.id}</td>
-                                <td>{customer.firstName}</td>
-                                <td>{customer.lastName}</td>
-                                <td>{customer.service}</td>
-                                <td>{customer.start_date}</td>
-                                <td>{customer.end_date}</td>
+                        {/* {filteredCustomers.map(booking => ( */}
+                        {bookings.map(booking => (
+                            <tr key={booking._id}>
+                                <td>{booking._id}</td>
+                                <td>{booking.customerId}</td>
+                                <td>{booking.serviceType}</td>
+                                <td>{booking.frequency}</td>
+                                <td>{booking.startDate}</td>
+                                <td>{booking.endDate}</td>
+                                <td>{booking.employeeId}</td>
+                                <td>{booking.status}</td>
                                 <td>
-                                    <IconTipName Icon={FcSearch} size={30} name="Details" />
+                                    <IconTipName Icon={FcSearch} size={30} name="Details" onClick={() => handleBookingDetails(booking._id)} />
                                 </td>
                                 <td>
-                                    <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete"  onClick={showDeleteModal} />
+                                    <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete" onClick={showDeleteModal} />
                                 </td>
                             </tr>
                         ))}

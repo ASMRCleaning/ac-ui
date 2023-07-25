@@ -68,7 +68,7 @@ const Residence = () => {
         source === "managerC" ? router.push("/employee/customer") : router.push("/userHome");
 
         //clear the session storage value
-        sessionStorage.removeItem('source');        
+        sessionStorage.removeItem('source');
     }
 
     //hit Delete button
