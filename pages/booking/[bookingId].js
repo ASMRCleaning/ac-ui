@@ -5,8 +5,8 @@ import { useRouter } from "next/router";
 // import { useAtom } from "jotai";
 // import { bookingInfoAtom } from "../../store";
 import { useForm } from "react-hook-form";
-import { getBookingById } from "../../lib/booking";
-import { formatBookingDate, capitalizeFirstLetter } from "../../components/CommonFunction"
+import { getBookingById, updateBookingById } from "../../lib/booking";
+import { formatBookingDate, capitalizeFirstLetter, formatDateToISO, disableCapitalizeFirstLetter } from "../../components/CommonFunction";
 import { getUsersByRole } from "../../lib/user";
 
 const BookingDetails = () => {
@@ -45,7 +45,7 @@ const BookingDetails = () => {
                     setValue("serviceType", data.bookings.serviceType);
                     setValue("frequency", data.bookings.frequency);
                     setValue("startDate", formatBookingDate(data.bookings.startDate));
-                    setValue("endDate", formatBookingDate(data.bookings.startDate));
+                    setValue("endDate", formatBookingDate(data.bookings.endDate));
                     setValue("specification", capitalizeFirstLetter(data.bookings.specification));
                 }
                 catch (err) {
@@ -109,26 +109,27 @@ const BookingDetails = () => {
 
     async function submitForm(data) {
         //set the new info in a new variable
-        console.log(data)
+        const startDate = formatDateToISO(data.startDate);
+        const endDate = formatDateToISO(data.endDate);
+        const status = disableCapitalizeFirstLetter(data.status);
 
         const updateBookingInfo = {
+            bookingId: data._id,
             employeeId: data.employeeId,
-            status: data.status,
+            status: status,
             serviceType: data.serviceType,
             frequency: data.frequency,
-            startDate: data.startDate,
-            endDate: data.endDate,
+            startDate: startDate,
+            endDate: endDate,
             specification: data.specification,
         }
-
-        //update the jotai
-        // await setBookingInfo(updateBookingInfo);
-
-
         try {
             //call api to store info
-            await updateBookingById(updateBookingInfo);
-            // router.push(/result);
+            const res = await updateBookingById(updateBookingInfo);
+            //show modal with update result
+            setResModal(res);
+            setShowModal(true);
+
 
         } catch (err) { console.log(err); }
     }
@@ -268,11 +269,11 @@ const BookingDetails = () => {
 
                 <Modal show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Residence Updated</Modal.Title>
+                        <Modal.Title>Booking Updated</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {/* update residence information */}
-                        {resModal && resModal.status === "ok" ? (<p>Your residence information has been successfully updated.</p>)
+                        {resModal && resModal.status === "ok" ? (<p>The booking information has been successfully updated.</p>)
                             : (<p>Something wrong happened, please try again later</p>)
                         }
                     </Modal.Body>

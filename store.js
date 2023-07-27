@@ -8,6 +8,7 @@ export const userInfoAtom = atom({
     'email':'',
     'phone':'',
     'role':'',
+    'userId': '',
 })
 
 //residenceAddress information 
@@ -33,8 +34,8 @@ export const residenceInfoAtom = atom({
 //residenceAddress information 
 export const bookingInfoAtom = atom({
     '_id': 0,
-    'employeeId': '',
-    'customerId': '',
+    'employee': '',
+    'customer': '',
     'residenceId': '',
     'status': '',
     'serviceType': '',
