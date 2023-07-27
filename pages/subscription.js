@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Button, Modal } from "react-bootstrap";
 import Link from "next/link";
-import { FcSearch } from "react-icons/fc"
-import { AiTwotoneDelete } from "react-icons/ai";
-import IconTipName from "../components/IconTipName";
+import { FcSearch } from "react-icons/fc" //icon detail 
+import { AiTwotoneDelete } from "react-icons/ai"; //icon delete
+import IconTipName from "../components/IconTipName"; //add icon format and action
 import { useAtom } from "jotai";
 import { userInfoAtom } from "../store";
 import { useRouter } from "next/router";
-import { getAllBooking, getBookingById } from "../lib/booking";
+import { getAllBooking, removeBooking } from "../lib/booking";
+import { getUserById } from "../lib/user";
+import { formatBookingDate } from "../components/CommonFunction";
 
 // const customers = [
 //     { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Green Cleaning' },
@@ -18,6 +20,8 @@ import { getAllBooking, getBookingById } from "../lib/booking";
 const Subscription = () => {
     const router = useRouter();
     const [bookings, setBookings] = useState([]);
+    const [userBooking, setUserBooking] = useState([]);
+    const [bookingIdDel, setBookingIdDel] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModalD, setShowModalD] = useState(false);
 
@@ -30,9 +34,10 @@ const Subscription = () => {
 
     //store information about the previous page to use in next page
     const handlePreviousSession = () => {
-       
+
     }
 
+    //Booking data
     useEffect(() => {
         //retrieve residence information when component mounts
         async function fetchBooking() {
@@ -48,8 +53,46 @@ const Subscription = () => {
         fetchBooking();
     }, []);
 
+
+    //Customer and Employee data
+    useEffect(() => {
+        //retrieve customer information when component mounts
+        async function fetchUserBooking() {
+            try {
+                //get all userIds that exist in booking
+                const userIds = Array.from(new Set(bookings.map(booking => [booking.customerId, booking.employeeId]).flat()));
+
+                //call API GET: user by id (user?id=)
+                const userInfo = userIds.map(userId => getUserById(userId));
+                const userData = await Promise.all(userInfo);
+
+                //convert to Object and make _id as Key
+                const userObj = userData.reduce((acc, user) => {
+                    acc[user._id] = user;
+                    return acc;
+                }, {});
+
+                setUserBooking(userObj);
+            }
+            catch (err) {
+                console.error("Error fetching user information: ", err);
+            }
+        }
+
+        fetchUserBooking();
+    }, [bookings])
+
+    // const formatBookingDate = (bookingDate) => {
+    //     const date = new Date(bookingDate);
+    //     return format(date, "dd.MM.yyyy");
+    // }
+
+    const capitalizeFirstLetter = (str) => {
+        return str.split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+    }
     //hit Delete button
-    const showDeleteModal = () => {
+    const showDeleteModal = (bookingId) => {
+        setBookingIdDel(bookingId);
         setShowModalD(true);
     }
 
@@ -57,32 +100,19 @@ const Subscription = () => {
         setShowModalD(false);
     }
 
-    //delete residence data
-    async function handleDeleteRes() {
-        try {
-            // await removeResidence();
+    //delete booking data
+    async function handleDelete() {
+        if (bookingIdDel) {
+            try {
+                await removeBooking(bookingIdDel);
 
-            closeDeleteModal()
-
-            // Reset the form fields
-            // setValue("houseType", "");
-            // setValue("size", "");
-            // setValue("empty", false);
-            // setValue("furnished", false);
-            // setValue("pet", false);
-            // setValue("bedroom", "");
-            // setValue("bathroom", "");
-            // setValue("den", "");
-            // setValue("frequency", "");
-
-            // Clear the residenceInfo atom
-            // setResidenceInfo({});
-
-            // Set hasResidence to false
-            // setHasResidence(false);
+                //remove booking._id deleted from previous list
+                setBookings((prevBooking) => prevBooking.filter((booking) => booking._id !== bookingIdDel));
+                closeDeleteModal()
+            }
+            catch (err) { console.log(err); }
         }
 
-        catch (err) { console.log(err); }
     }
 
     const handleSearch = e => {
@@ -107,7 +137,12 @@ const Subscription = () => {
     }
     return (
         <>
-            <Row>
+            <Row style={{ marginTop: "50px" }}>
+                <h3 style={{ textAlign: "center", fontSize: "2.5rem" }}>
+                    Subscription Menu
+                </h3>
+            </Row>
+            <Row style={{ marginTop: "70px" }}>
                 <Col className="col col-sm-7">
                     <input
                         type="text"
@@ -135,7 +170,7 @@ const Subscription = () => {
             </Row>
             <br />
             <br />
-            <Row>
+            <Row style={{ marginTop: "70px", marginBottom: "70px" }}>
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -157,38 +192,38 @@ const Subscription = () => {
                         {bookings.map(booking => (
                             <tr key={booking._id}>
                                 <td>{booking._id}</td>
-                                <td>{booking.customerId}</td>
-                                <td>{booking.serviceType}</td>
-                                <td>{booking.frequency}</td>
-                                <td>{booking.startDate}</td>
-                                <td>{booking.endDate}</td>
-                                <td>{booking.employeeId}</td>
-                                <td>{booking.status}</td>
+                                <td>{userBooking[booking.customerId] ? `${user[booking.customerId].firstName} ${user[booking.customerId].lastName}` : 'Loading......'}</td>
+                                <td>{capitalizeFirstLetter(booking.serviceType)}</td>
+                                <td>{capitalizeFirstLetter(booking.frequency)}</td>
+                                <td>{formatBookingDate(booking.startDate)}</td>
+                                <td>{formatBookingDate(booking.endDate)}</td>
+                                <td>{userBooking[booking.employeeId] ? `${user[booking.customerId].firstName} ${user[booking.customerId].lastName}` : 'Loading......'}</td>
+                                <td>{capitalizeFirstLetter(booking.status)}</td>
                                 <td>
                                     <IconTipName Icon={FcSearch} size={30} name="Details" onClick={() => handleBookingDetails(booking._id)} />
                                 </td>
                                 <td>
-                                    <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete" onClick={showDeleteModal} />
+                                    <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete" onClick={() => showDeleteModal(booking._id)} />
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </Row>
-
+            <br /><br /><br /><br /><br /><br /><br /><br />
             {/* Delete modal */}
             <Modal show={showModalD} onHide={() => setShowModalD(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Delete employee profile?</Modal.Title>
+                    <Modal.Title>Delete subscription?</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Do you want to delete this employee profile?
+                    Do you want to delete this subscription? It will delete all services booked.
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={closeDeleteModal}>
                         No
                     </Button>
-                    <Button variant="danger" onClick={handleDeleteRes}>
+                    <Button variant="danger" onClick={handleDelete}>
                         Yes
                     </Button>
                 </Modal.Footer>
