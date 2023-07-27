@@ -9,7 +9,7 @@ import { userInfoAtom } from "../store";
 import { useRouter } from "next/router";
 import { getAllBooking, removeBooking } from "../lib/booking";
 import { getUserById } from "../lib/user";
-import { formatBookingDate } from "../components/CommonFunction";
+import { formatBookingDate, capitalizeFirstLetter } from "../components/CommonFunction";
 
 // const customers = [
 //     { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com', start_date: '01/08/2023', end_date: '01/08/2023', service: 'Green Cleaning' },
@@ -31,11 +31,6 @@ const Subscription = () => {
     // const filteredCustomers = bookings.filter(booking => booking.firstName.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
     // booking.lastName.toLocaleLowerCase().includes(searchTerm.toLowerCase())
     // );
-
-    //store information about the previous page to use in next page
-    const handlePreviousSession = () => {
-
-    }
 
     //Booking data
     useEffect(() => {
@@ -82,14 +77,6 @@ const Subscription = () => {
         fetchUserBooking();
     }, [bookings])
 
-    // const formatBookingDate = (bookingDate) => {
-    //     const date = new Date(bookingDate);
-    //     return format(date, "dd.MM.yyyy");
-    // }
-
-    const capitalizeFirstLetter = (str) => {
-        return str.split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
-    }
     //hit Delete button
     const showDeleteModal = (bookingId) => {
         setBookingIdDel(bookingId);
@@ -153,11 +140,11 @@ const Subscription = () => {
                     />
                 </Col>
                 <Col className="col col-sm-2" style={{ paddingTop: "10px" }}>
-                    {/* <Link href="/register"> */}
+                    <Link href="/booking/create-booking">
                     <Button variant="primary" className="btn btn-outline-success btn-sm" style={{ padding: "10px", height: "40px", width: "180px" }} type="submit">
                         Create Subscription
                     </Button>
-                    {/* </Link> */}
+                    </Link>
                 </Col>
                 <Col className="col col-sm-2" style={{ paddingTop: "10px" }}>
                     <Button className="btn btn-outline-info btn-sm"

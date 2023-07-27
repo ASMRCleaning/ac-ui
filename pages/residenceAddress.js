@@ -36,7 +36,7 @@ const Residence = () => {
             const data = await getResidence();
 
             //if GET: residence retrieves data set it in residenceInfo and form variables
-            if (data !== null) {
+            if (data) {
                 setResidenceInfo({
                     houseType: data.residence.houseType,
                     size: data.residence.size,
@@ -114,7 +114,6 @@ const Residence = () => {
             try {
                 //call api to store info
                 const res = await updateResidence(updateResidenceInfo);
-                console.log("goes to update");
 
                 //show modal with update result
                 setResModal(res);

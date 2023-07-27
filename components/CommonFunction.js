@@ -22,3 +22,7 @@ export function formatDateToISO(inputDate) {
   
     return formattedDate;
   }
+
+  export const disableCapitalizeFirstLetter = (str) => {
+    return str.split(" ").map((word) => word.charAt(0).toLowerCase() + word.slice(1)).join(" ");
+};
