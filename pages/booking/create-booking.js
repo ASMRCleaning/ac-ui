@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Form, Button, Alert, Col, Card, Modal } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { registerBookingByCustomer, } from "../../lib/booking";
+import { registerBookingByCustomer, registerBooking } from "../../lib/booking";
 import { getUserInfo, getUsersByRole } from "../../lib/user";
 import { getResidenceByCustomerId } from "../../lib/residence";
 import { formatDateToISO } from "../../components/CommonFunction";
 import { useAtom } from "jotai";
-import { residenceInfoAtom, userInfoAtom } from "../../store"
+import { userInfoAtom } from "../../store"
 
 const CreateBooking = () => {
     const router = useRouter()
@@ -18,7 +18,6 @@ const CreateBooking = () => {
 
     //global variable defined in store.js
     const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-    // const [bookingInfo, setBookingInfo] = useAtom(bookingInfoAtom);
 
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
@@ -43,27 +42,29 @@ const CreateBooking = () => {
                         role: data.user.role,
                         userId: data.user._id,
                     })
-                }
-                //check if user is manager to show employee/customer information
-                setUserRole(userInfo.role);
 
-                //store userId if customer to pass in JSON
-                if (userRole === "customer") {
-                    setValue("customerId", userInfo.userId);
+                    //check if user is manager to show employee/customer information
+                    setUserRole(userInfo.role);
 
-                    //check if customer user has residence
-                    const residence = await getResidenceByCustomerId(userInfo.userId);
+                    //store userId if customer to pass in JSON
+                    if (data.user.role === "customer") {
+                        setValue("customerId", data.user._id);
 
-                    if (!residence) {
-                        setHasResidence(false);
-                    }
-                    else {
-                        setResidenceId(residence.residence._id);
+                        //check if customer user has residence
+                        const residence = await getResidenceByCustomerId(data.user._id);
+                        setValue("residenceId", residence.residence._id);
+
+                        if (!residence) {
+                            setHasResidence(false);
+                        }
+                        else {
+                            setResidenceId(residence.residence._id);
+                        }
                     }
                 }
             }
             catch (err) {
-                console.error("Error fetching user: ", err);
+                console.error("Error fetching user and residence info: ", err);
             }
         }
         fetchUserInfo();
@@ -99,6 +100,37 @@ const CreateBooking = () => {
         fetchCustomerUsers();
     }, []);
 
+    const checkDate = (inputDate) => {
+        // Split the input date string by '.' to extract day, month, and year
+        const [day, month, year] = inputDate.split('.');
+
+        // Convert day, month, and year to numbers
+        const dayNum = parseInt(day, 10);
+        const monthNum = parseInt(month, 10);
+        const yearNum = parseInt(year, 10);
+
+        // Check if day, month, and year are valid
+        if (
+            isNaN(dayNum) || isNaN(monthNum) || isNaN(yearNum) ||
+            dayNum < 1 || dayNum > 31 || monthNum < 1 || monthNum > 12 || yearNum < 1000
+        ) {
+            return false;
+        }
+
+        // Additional check for February and leap years
+        const isLeapYear = (yearNum % 4 === 0 && yearNum % 100 !== 0) || yearNum % 400 === 0;
+        if ((monthNum === 2 && dayNum > 29) || (!isLeapYear && monthNum === 2 && dayNum > 28)) {
+            return false;
+        }
+
+        // Additional check for months with 30 days
+        if ([4, 6, 9, 11].includes(monthNum) && dayNum > 30) {
+            return false;
+        }
+
+        return true;
+    };
+
     //set selected customer to check if they have residence
     const handleSelectCustomer = async (customerId) => {
         setValue("customerId", customerId);
@@ -119,12 +151,11 @@ const CreateBooking = () => {
     }
     const handleServiceType = (option) => {
         setSelectService(option);
-        console.log(selectService);
     };
 
     const handleRedirect = () => {
         //if manager go back to previous page
-        source === "managerS" ? router.push("/subscription") : router.push("/userHome");
+        source === "managerS" ? router.push("/subscription") : router.push("/customer/userHome");
 
         //clear the session storage value
         sessionStorage.removeItem(source);
@@ -136,8 +167,8 @@ const CreateBooking = () => {
         const endDate = formatDateToISO(data.endDate);
 
         const updateBookingInfo = {
-            customerId: data.customerId,
-            employeeId: data.employeeId,
+            customerId: data.customerId || userInfo.userId,
+            employeeId: data.employeeId || null,
             residenceId: residenceId,
             status: "ongoing",
             serviceType: selectService,
@@ -146,9 +177,17 @@ const CreateBooking = () => {
             endDate: endDate,
             specification: data.specification,
         }
+        console.log(updateBookingInfo);
         try {
+            if (userRole === "customer") {
+                const res = await registerBookingByCustomer(updateBookingInfo);
+
+                //show modal with update result
+                setResModal(res);
+                setShowModal(true);
+            }
             //call api to store info
-            const res = await registerBookingByCustomer(updateBookingInfo);
+            const res = await registerBooking(updateBookingInfo);
 
             //show modal with update result
             setResModal(res);
@@ -195,12 +234,18 @@ const CreateBooking = () => {
                                 <br />
                             </Form.Group >)}
                     </Row>
-                    {!hasResidence && (<Alert variant="danger">The customer selected doesn't have residence, please proceed to crate customer's residence before continue create their booking</Alert>)}
+                    {!hasResidence && (<Alert variant="danger">The customer selected doesn't have residence, please proceed to create customer's residence before continue create a booking</Alert>)}
                     <br />
                     <Row className="mb-9">
                         <Form.Group className="col col-sm-4">
                             <Form.Label>Start Date</Form.Label>
-                            <Form.Control className={errors.startDate && "inputErrors"} {...register("startDate", { required: true, pattern: "\d{2}.\d{2}.\d{4}" })}
+                            <Form.Control className={errors.startDate && "inputErrors"} {...register("startDate", {
+                                required: true, pattern: {
+                                    value: /\d{2}\.\d{2}\.\d{4}/,
+                                    message: "",
+                                },
+                                validate: { validDate: (startDate) => checkDate(startDate) },
+                            })}
                                 type="text"
                                 id="startDate"
                                 name="startDate"
@@ -208,10 +253,17 @@ const CreateBooking = () => {
                             <br />
                             {errors.startDate?.type === "required" && (<Alert variant="danger">Start Date is required</Alert>)}
                             {errors.startDate?.type === "pattern" && (<Alert variant="danger"> Please, enter date in the correct format</Alert>)}
+                            {errors.startDate?.type === "validDate" && (<Alert variant="danger"> Please, enter a correct date</Alert>)}
                         </Form.Group>
                         <Form.Group className="col col-sm-4">
                             <Form.Label>End Date</Form.Label>
-                            <Form.Control className={errors.endDate && "inputErrors"} {...register("endDate", { required: true, pattern: "\d{2}.\d{2}.\d{4}" })}
+                            <Form.Control className={errors.endDate && "inputErrors"} {...register("endDate", {
+                                required: true, pattern: {
+                                    value: /\d{2}\.\d{2}\.\d{4}/,
+                                    message: "",
+                                },
+                                validate: { validDate: (startDate) => checkDate(startDate) },
+                            })}
                                 type="text"
                                 id="endDate"
                                 name="endDate"
@@ -219,6 +271,7 @@ const CreateBooking = () => {
                             <br />
                             {errors.endDate?.type === "required" && (<Alert variant="danger">End Date is required</Alert>)}
                             {errors.endDate?.type === "pattern" && (<Alert variant="danger"> Please, enter date in the correct format</Alert>)}
+                            {errors.startDate?.type === "validDate" && (<Alert variant="danger"> Please, enter date in the correct format</Alert>)}
                         </Form.Group>
                         <Form.Group className="col col-sm-4">
                             <Form.Label> Frequency</Form.Label>
@@ -327,7 +380,6 @@ const CreateBooking = () => {
                             <Button variant="primary"
                                 className="btn btn-outline-success"
                                 type="submit"
-                                disable={Object.keys(errors).length > 0}
                                 style={{ padding: "15px", margin: "1px", width: "50%" }}>Save</Button>
                         </Col>
                     </Row>

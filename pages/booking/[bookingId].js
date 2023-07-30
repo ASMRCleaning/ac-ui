@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { getBookingById, updateBookingById } from "../../lib/booking";
 import { formatBookingDate, capitalizeFirstLetter, formatDateToISO, disableCapitalizeFirstLetter } from "../../components/CommonFunction";
-import { getUsersByRole } from "../../lib/user";
+import { getUserById, getUsersByRole } from "../../lib/user";
 
 const BookingDetails = () => {
     const router = useRouter();
@@ -24,6 +24,7 @@ const BookingDetails = () => {
     const [resModal, setResModal] = useState(null);
     const [bookingIdInfo, setBookingIdInfo] = useState([]);
     const [employeeUsers, setEmployeeUsers] = useState([]);
+    const [customerUser, setCustomerUser] = useState([]);
     // const [hasResidence, setHasResidence] = useState(false);
 
     //Booking data
@@ -36,6 +37,9 @@ const BookingDetails = () => {
                     //calls API GET: booking by id
                     const data = await getBookingById(bookingId);
                     setBookingIdInfo(data.bookings);
+
+                    const customer  = await getUserById(data.bookings.customerId);
+                    setCustomerUser(customer.user);
 
                     //set the value retrieve from API to variables to show to user
                     setValue("_id", data.bookings._id);
@@ -56,34 +60,6 @@ const BookingDetails = () => {
         }
     }, [bookingId]);
 
-    //Customer and Employee data
-    // useEffect(() => {
-    //     //retrieve customer information when component mounts
-    //     async function fetchUserBooking() {
-    //         try {
-    //             //get all userIds that exist in booking
-    //             const userIds = Array.from(new Set(bookingIdInfo.map(booking => [bookingIdInfo.customerId, bookingIdInfo.employeeId]).flat()));
-
-    //             //call API GET: user by id (user?id=)
-    //             const userInfo = userIds.map(userId => getUserById(userId));
-    //             const userData = await Promise.all(userInfo);
-
-    //             //convert to Object and make _id as Key
-    //             const userObj = userData.reduce((acc, user) => {
-    //                 acc[user._id] = user;
-    //                 return acc;
-    //             }, {});
-
-    //             setUserBooking(userObj);
-    //         }
-    //         catch (err) {
-    //             console.error("Error fetching user information: ", err);
-    //         }
-    //     }
-
-    //     fetchUserBooking();
-    // }, [bookingIdInfo])
-
     //Get list of Employee
     useEffect(() => {
         async function fetchEmployeeUsers() {
@@ -101,7 +77,7 @@ const BookingDetails = () => {
 
     const handleRedirect = () => {
         //if manager go back to previous page
-        source === "managerS" ? router.push("/subscription") : router.push("/userHome");
+        source === "managerS" ? router.push("/subscription") : router.push("/customer/booking");
 
         //clear the session storage value
         sessionStorage.removeItem(source);
@@ -153,6 +129,7 @@ const BookingDetails = () => {
                                 type="text"
                                 id="customerId"
                                 name="customerId"
+                                value={`${customerUser.firstName} ${customerUser.lastName}`}
                                 disabled="true" />
                             <br />
                         </Form.Group>
@@ -193,7 +170,7 @@ const BookingDetails = () => {
                                 <option value="monthly"> Monthly </option>
                             </Form.Select>
                             <br />
-                            {errors.frequency?.type === "required" && (<Alert variant="danger">City is required</Alert>)}
+                            {errors.frequency?.type === "required" && (<Alert variant="danger">Frequency is required</Alert>)}
                         </Form.Group>
                     </Row>
                     <br />
@@ -205,7 +182,7 @@ const BookingDetails = () => {
                                 id="startDate"
                                 name="startDate" />
                             <br />
-                            {errors.startDate?.type === "required" && (<Alert variant="danger">City is required</Alert>)}
+                            {errors.startDate?.type === "required" && (<Alert variant="danger">Start Date is required</Alert>)}
                         </Form.Group>
                         <Form.Group className="col col-sm-6">
                             <Form.Label>End Date</Form.Label>
@@ -214,7 +191,7 @@ const BookingDetails = () => {
                                 id="endDate"
                                 name="endDate" />
                             <br />
-                            {errors.endDate?.type === "required" && (<Alert variant="danger">City is required</Alert>)}
+                            {errors.endDate?.type === "required" && (<Alert variant="danger">End Date is required</Alert>)}
                         </Form.Group>
                     </Row>
                     <br />

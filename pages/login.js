@@ -5,11 +5,13 @@ import { authenticateUser } from "../lib/authenticate";
 import { getUserInfo } from "../lib/user";
 import { useRouter } from "next/router";
 import { useAtom } from "jotai";
-import { userInfoAtom, residenceInfoAtom } from "../store";
+import { userInfoAtom } from "../store";
 
-export default function Login(props) {
+export default function Login() {
+  const source = sessionStorage.getItem("source"); //get the session 
+
   //control form information
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   //global variable to store customer information and get userName
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
@@ -28,21 +30,26 @@ export default function Login(props) {
 
       //get user information
       const userData = await getUserInfo();
-      
+
       //set user info into global variable
       await setUserInfo({
-        username: userData.user.username, 
-        firstName: userData.user.firstName, 
-        lastName: userData.user.lastName, 
-        email: userData.user.email, 
-        phone: userData.user.phone, 
+        username: userData.user.username,
+        firstName: userData.user.firstName,
+        lastName: userData.user.lastName,
+        email: userData.user.email,
+        phone: userData.user.phone,
         role: userData.user.role
       });
 
-      //render the correct userHome
-      userData.user.role === "customer"
-        ? router.push("/userHome")
-        : router.push("employee/userHome");
+      if (source === "questionnaire") {
+        router.push("/residence");
+      }
+      else {
+        //render the correct userHome
+        userData.user.role === "customer"
+          ? router.push("/customer/userHome")
+          : router.push("employee/userHome");
+      }
     }
     catch (err) {
       if (err.message.includes("500")) {

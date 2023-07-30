@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Form, Button, Image, Alert, Col, Card, Modal } from "react-bootstrap";
 import { useRouter } from 'next/router';
-import { registerResidence, getResidence, updateResidence } from "../lib/residence";
+import { registerResidence, getResidence, updateResidence } from "../../lib/residence";
 import { useAtom } from "jotai";
-import { residenceInfoAtom } from "../store";
+import { residenceInfoAtom } from "../../store";
 import { useForm } from 'react-hook-form';
 
 const Residence = () => {
@@ -25,11 +25,6 @@ const Residence = () => {
     //get where login page comes from
     // const source = sessionStorage.getItem('source');
 
-    // Check the object changes
-    // useEffect(() => {
-    //     console.log(residenceInfo);
-    // }, [residenceInfo]);
-
     useEffect(() => {
         //retrieve residence information when the component mounts
         async function fetchResidence() {
@@ -46,7 +41,6 @@ const Residence = () => {
                     bedroom: data.residence.bedroom,
                     bathroom: data.residence.bathroom,
                     den: data.residence.den,
-                    frequency: data.residence.frequency,
                     address: {
                         streetAddress: data.residence.address?.streetAddress,
                         unit: data.residence.address?.unit,
@@ -74,7 +68,7 @@ const Residence = () => {
 
     const handleRedirect = () => {
         //if manager go back to previous page
-        source === "managerC" ? router.push("/employee/customer") : router.push("/userHome");
+        source === "managerC" ? router.push("/employee/customer") : router.push("/customer/userHome");
 
         //clear the session storage value
         sessionStorage.removeItem('source');
@@ -105,7 +99,7 @@ const Residence = () => {
             try {
                 //call api to store info
                 await registerResidence(updateResidenceInfo);
-                router.push('/result');
+                router.push('/booking/create-booking');
 
             } catch (err) { console.log(err); }
         }
