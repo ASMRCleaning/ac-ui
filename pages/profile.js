@@ -3,8 +3,7 @@ import { Container, Col, Row, Image, Form, Alert, Button, Modal } from "react-bo
 import { useForm } from 'react-hook-form';
 import { useAtom } from "jotai";
 import { userInfoAtom } from "../store";
-import { updateCustomerInfo } from "../lib/customer";
-import { getUserInfo } from "../lib/user";
+import { getUserInfo, updateUserInfo } from "../lib/user";
 import { useRouter } from "next/router";
 
 const Profile = () => {
@@ -17,10 +16,9 @@ const Profile = () => {
     //global variable defined in store.js
     const [userInfo, setUserInfoAtom] = useAtom(userInfoAtom);
 
-    // const password = watch('password');
-    // const password2 = watch('password2');
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
+
 
     const router = useRouter();
 
@@ -35,20 +33,27 @@ const Profile = () => {
                 username: data.user.username,
                 firstName: data.user.firstName,
                 lastName: data.user.lastName,
+                email: data.user.email,
+                phone: data.user.phone,
+                role: data.user.role,
             });
             setValue("firstName", data.user.firstName);
             setValue("lastName", data.user.lastName);
+            setValue("email", data.user.email);
+            setValue("phone", data.user.phone);
         }
         fetchCustomer();
     }, []);
 
     const handleRedirect = () => {
         //if manager go back to previous page
-        if(source === "managerC")
-            router.push("/employee/customer")
-        else if(source === "managerE")
-            router.push("/employee/employee")
-        else router.push("/login");
+        // if(source === "managerC")
+        //     router.push("/employee/customer")
+        // else if(source === "managerE")
+        //     router.push("/employee/employee")
+        // else router.push("/login");
+        if(userInfo.role === "customer"){ return router.push("/customer/userHome")}
+        else{ return router.push("/employee/employee")}
 
         //clear the session storage value
         sessionStorage.removeItem('source');
@@ -57,7 +62,9 @@ const Profile = () => {
     async function submitForm(data) {
         const updateCustomer = {
             firstName: data.firstName,
-            lastName: data.lastName
+            lastName: data.lastName,
+            email: data.email,
+            phone: data.phone,
         };
 
         //update jotai customer object
@@ -65,7 +72,7 @@ const Profile = () => {
 
         //call customer API to stores info
         try {
-            const res = await updateCustomerInfo(updateCustomer);
+            const res = await updateUserInfo(updateCustomer);
 
             //show modal with update result
             setResModal(res);
@@ -120,7 +127,31 @@ const Profile = () => {
                         </Form.Group>
                     </Row>
                     <br />
-                    {/* <Row className="mb-9">
+                    <Row className="mb-9">
+                        <Form.Group className="col col-sm-9">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control className={errors.email && "inputErrors"}{...register("email", { required: true, maxLength: 100 })}
+                                type="text"
+                                id="email"
+                                name="email" />
+                            {errors.email?.type === "required" && (<Alert variant="danger">Email is required</Alert>)}
+                            {errors.email?.type === "maxLength" && (<Alert variant="danger">Email must have maximum 100 character</Alert>)}
+                        </Form.Group>
+                    </Row>
+                    <br />
+                    <Row className="mb-9">
+                        <Form.Group className="col col-sm-9">
+                            <Form.Label>Phone</Form.Label>
+                            <Form.Control className={errors.phone && "inputErrors"}{...register("phone", { required: true, maxLength: 100 })}
+                                type="text"
+                                id="phone"
+                                name="phone" />
+                            {errors.lastName?.type === "required" && (<Alert variant="danger">Phone is required</Alert>)}
+                            {errors.lastName?.type === "maxLength" && (<Alert variant="danger">Phone must have maximum 100 character</Alert>)}
+                        </Form.Group>
+                    </Row>
+                    {/* <br />
+                    <Row className="mb-9">
                         <Form.Group className="col col-sm-9">
                             <Form.Label>Password</Form.Label>
                             <Form.Control className={errors.password && "inputErrors"}{...register("password", { minLength: 5 })}
@@ -141,8 +172,9 @@ const Profile = () => {
                             {errors.password2?.type === "validate" && (<Alert variant="danger">Password do not match</Alert>)}
                         </Form.Group>
                     </Row> */}
+                    <br /><br/>
                     <Row className="mb-3" style={{ padding: "10px" }}>
-                        <br />
+
                         <Col>
                             <Button variant="primary"
                                 className="btn btn-outline-info"

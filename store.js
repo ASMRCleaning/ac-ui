@@ -21,7 +21,6 @@ export const residenceInfoAtom = atom({
     'bedroom': 0,
     'bathroom': 0,
     'den': 0,
-    'frequency': '',
     'address': {
         'streetAddress': '',
         'unit': '',

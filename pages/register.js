@@ -12,7 +12,7 @@ const RegisterPage = () => {
     const source = sessionStorage.getItem("source");
 
     //control form information
-    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
     const password = watch('password');
     const password2 = watch('password2');
@@ -223,7 +223,7 @@ const RegisterPage = () => {
                         </Button>
                         </Link>
                     ):
-                    <Link href="/userHome">
+                    <Link href="/login">
                         <Button variant="primary" onClick={() => setShowModal(false)}>
                             Close
                         </Button>

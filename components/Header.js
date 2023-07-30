@@ -12,6 +12,10 @@ const Header = () => {
 
     function logout() {
         removeToken();
+
+        //clear the session storage value
+        sessionStorage.removeItem('source');
+        
         router.push("/");
     }
 
@@ -76,21 +80,23 @@ const Header = () => {
                                     <Nav.Item >
                                         <NavDropdown title={`Hi, ${userInfo.firstName}`} id="basic-nav-dropdown">
                                             {userInfo.role === "customer" && (<>
+                                             <NavDropdown.Item>
+                                                <Link style={{ textDecoration: "none" }} href="/customer/userHome"> Home Page </Link></NavDropdown.Item>
                                                 <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/residenceAddress">Address</Link></NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/customer/residenceAddress">Address</Link></NavDropdown.Item>
                                                 <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/booking"> Booking</Link>
+                                                    <Link style={{ textDecoration: "none" }} href="/customer/booking"> Booking</Link>
                                                 </NavDropdown.Item>
                                                 <NavDropdown.Item>
                                                     <Link style={{ textDecoration: "none" }} href="/profile"> Profile </Link></NavDropdown.Item>
                                                 <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/residence">Residence</Link></NavDropdown.Item>
-                                                <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/userHome"> User Home Page </Link></NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/customer/residence">Residence</Link></NavDropdown.Item>
                                             </>)}
+                                            {userInfo.role !== "customer" &&(
                                             <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/employee/userHome"> User Home Page </Link></NavDropdown.Item>
+                                                <Link style={{ textDecoration: "none" }} href="/employee/userHome"> Home Page </Link></NavDropdown.Item>)}
                                             <NavDropdown.Item onClick={logout}> Logout</NavDropdown.Item>
+
                                         </NavDropdown>
                                     </Nav.Item>}
                             </Nav.Item>
@@ -98,14 +104,14 @@ const Header = () => {
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
-                    {userInfo.role === "customer" ||  !isAuthenticated()  && (
-                    <Nav.Item>
-                        <Container className="d-grid gap-1">
-                            <Link style={{ textDecoration: "none" }} href="/residence">
-                                <Button className="btn btn-outline-success" >Get a free quote here</Button>
-                            </Link>
-                        </Container>
-                    </Nav.Item>
+                    {userInfo.role === "customer" || !isAuthenticated() && (
+                        <Nav.Item>
+                            <Container className="d-grid gap-1">
+                                <Link style={{ textDecoration: "none" }} href="/residence">
+                                    <Button className="btn btn-outline-success" >Get a free quote here</Button>
+                                </Link>
+                            </Container>
+                        </Nav.Item>
                     )}
                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 </Nav >
