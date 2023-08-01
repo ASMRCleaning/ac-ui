@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Row, Card, Pagination, Button, Container, Image } from "react-bootstrap";
+import { Row, Card, Pagination, Button, Image, Modal } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { useAtom } from "jotai";
 import { userInfoAtom, bookingInfoAtom } from "../../store"
 import { getUserInfo } from "../../lib/user";
-import { getBookingByCustomer } from "../../lib/booking";
+import { getBookingByCustomer, updateVisitService } from "../../lib/booking";
 import { FcCancel } from "react-icons/fc";
 import { formatBookingDate } from "../../components/CommonFunction";
 import IconTipName from "../../components/IconTipName"; //add icon format and action
@@ -16,6 +16,8 @@ const UserHome = () => {
     const [hasSubscription, setHasSubscription] = useState(false);
     const [userVisit, setUserVisit] = useState([]);
     const today = new Date().toISOString();
+    const [showModal, setShowModal] = useState(false);
+    const [resModal, setResModal] = useState(null);
 
     //global variable
     const [userInfo, setUserInfo] = useAtom(userInfoAtom);
@@ -34,13 +36,24 @@ const UserHome = () => {
     const pageUpcomingVisits = filteredUpComingVisit.slice(startIndex, endIndex);
 
     //cancel visit
-    const handleCancelVisit = async (id) => {
-        // try {
-        //     router.push(`/booking/${id}`);
-        // }
-        // catch (err) {
-        //     console.error("Error to fetching booking by Id: ", err);
-        // }
+    const handleCancelVisit = async (visitId) => {
+        const status = "cancelled"
+        try {
+            //call API PUT by bookingId
+            const res = await updateVisitService(visitId, status);
+
+            // Update the visit status in the local state
+            setUserVisit(prevVisitService =>
+                prevVisitService.map(visit => (visit._id === visitId ? { ...visit, status } : visit))
+            );
+
+            //show modal with update result
+            setResModal(res);
+            setShowModal(true);
+
+        } catch (err) {
+            console.error(`Error to update visit status:`, err);
+        }
     }
 
     useEffect(() => {
@@ -171,6 +184,22 @@ const UserHome = () => {
             <Row className="flex">
                 <Image src="/userHome-3.jpg" style={{ height: "50%", width: "110%", display: "block" }} />
             </Row>
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Cleaning Service Updated</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {/* update residence information */}
+                    {resModal && resModal.status === "ok" ? (<p>The cleaning service visit has been updated.</p>)
+                        : (<p>Something wrong happened, please try again later</p>)
+                    }
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={() => setShowModal(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }

@@ -37,7 +37,7 @@ const UserHome = () => {
                     {isManager && (
                         <>
                             <Col>
-                                <Link style={{ textDecoration: "none" }} href='/subscription'>
+                                <Link style={{ textDecoration: "none" }} href='/employee/subscription'>
                                     <Card id="home-products" style={{ width: '25rem' }} >
                                         <Card.Header style={{ fontWeight: 'bold', fontSize: '2rem', textAlign: "center" }}>Subscription</Card.Header>
                                         <Card.Img src="/employee/office-cleaning-service.jpg" style={{ width: '100%' }} />
@@ -80,7 +80,7 @@ const UserHome = () => {
 
                     <Row>
                         <Col className="col col-sm-6" style={{ paddingTop: "40px", paddingLeft: "150px" }}>
-                            <Link style={{ textDecoration: "none" }} href='/employee/booking'>
+                            <Link style={{ textDecoration: "none" }} href='/employee/visit'>
                                 <Card id="home-products" style={{ width: '25rem' }}>
                                     <Card.Header style={{ fontWeight: 'bold', fontSize: '2rem', textAlign: "center" }}>Cleaning Services</Card.Header>
                                     <Card.Img src="/employee/booking_3.jpg" style={{ width: '100%' }} />

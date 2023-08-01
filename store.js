@@ -47,5 +47,7 @@ export const bookingInfoAtom = atom({
 
 export const viewInfoAtom = atom({
     'code': '',
-})
+});
+
+
 
