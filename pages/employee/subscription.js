@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Button, Modal } from "react-bootstrap";
 import Link from "next/link";
-import { FcSearch } from "react-icons/fc" //icon detail 
+import { FcSearch } from "react-icons/fc"         //icon detail 
 import { AiTwotoneDelete } from "react-icons/ai"; //icon delete
+import { GrCompliance } from "react-icons/gr"     //icon visit
 import IconTipName from "../../components/IconTipName"; //add icon format and action
 import { useAtom } from "jotai";
 import { userInfoAtom } from "../../store";
@@ -18,6 +19,7 @@ const Subscription = () => {
     const [bookingIdDel, setBookingIdDel] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModalD, setShowModalD] = useState(false);
+    const [visitService, setVisitService] = useState([]);
 
     //global variable from store.js
     const [userInfo, setUserInfo] = useAtom(userInfoAtom);
@@ -98,6 +100,15 @@ const Subscription = () => {
             console.error("Error to fetching booking by Id: ", err);
         }
     }
+    const handleVisitServices = async(id) =>{
+        try {
+            sessionStorage.setItem('source', 'managerV');
+            router.push(`/visit/${id}`);
+        }
+        catch (err) {
+            console.error("Error to fetching booking by Id: ", err);
+        }
+    }
     return (
         <>
             <Row style={{ marginTop: "50px" }}>
@@ -147,7 +158,7 @@ const Subscription = () => {
                             <th> Status </th>
                             <th> </th>
                             <th> </th>
-                            {/* <th> </th> */}
+                            <th> </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -167,6 +178,9 @@ const Subscription = () => {
                                 <td>{capitalizeFirstLetter(booking.status)}</td>
                                 <td>
                                     <IconTipName Icon={FcSearch} size={30} name="Details" onClick={() => handleBookingDetails(booking._id)} />
+                                </td>
+                                <td>
+                                    <IconTipName Icon={GrCompliance} size={30} name="Visit Services" onClick={() => handleVisitServices(booking._id)} />
                                 </td>
                                 <td>
                                     <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete" onClick={() => showDeleteModal(booking._id)} />
