@@ -13,6 +13,7 @@ export const userInfoAtom = atom({
 
 //residenceAddress information 
 export const residenceInfoAtom = atom({
+    'residenceId': '',
     'houseType': '',
     'size': 0,
     'empty': '',
@@ -42,5 +43,9 @@ export const bookingInfoAtom = atom({
     'startDate': '',
     'endDate': '',
     'specification': '',
+});
+
+export const viewInfoAtom = atom({
+    'code': '',
 })
 

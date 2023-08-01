@@ -155,10 +155,7 @@ const CreateBooking = () => {
 
     const handleRedirect = () => {
         //if manager go back to previous page
-        source === "managerS" ? router.push("/subscription") : router.push("/customer/userHome");
-
-        //clear the session storage value
-        sessionStorage.removeItem(source);
+        userInfo.role === "customer" ? router.push("/customer/userHome") : router.push("/employee/subscription");
     }
 
     async function submitForm(data) {

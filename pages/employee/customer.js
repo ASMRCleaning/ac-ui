@@ -1,78 +1,56 @@
-import React, { useState } from "react";
-import { Row, Col, Button, Modal } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Row, Col, Button } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import IconTipName from "../../components/IconTipName";
-import { FcHome, FcSearch } from 'react-icons/fc';
+import { FcHome } from 'react-icons/fc';
 import { FaAddressBook } from 'react-icons/fa';
-import { AiTwotoneDelete } from "react-icons/ai";
-
-const customers = [
-    { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com' },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com' },
-    { id: 3, firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com' },
-];
+import { getUsersByRole } from "../../lib/user";
+import { useAtom } from "jotai";
+import { viewInfoAtom } from "../../store";
 
 const Customer = () => {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
-    const [showModalD, setShowModalD] = useState(false);
+    const [customersUser, setCustomersUser] = useState([]);
+    const [viewInfo, setViewInfo] = useAtom(viewInfoAtom);
 
-    const filteredCustomers = customers.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
+    const filteredCustomers = customersUser.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
         customer.lastName.toLocaleLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    //hit Delete button
-    const showDeleteModal = () => {
-        setShowModalD(true);
-    }
-
-    const closeDeleteModal = () => {
-        setShowModalD(false);
-    }
-
-    //delete residence data
-    async function handleDeleteRes() {
-        try {
-            // await removeResidence();
-
-            closeDeleteModal()
-
-            // Reset the form fields
-            // setValue("houseType", "");
-            // setValue("size", "");
-            // setValue("empty", false);
-            // setValue("furnished", false);
-            // setValue("pet", false);
-            // setValue("bedroom", "");
-            // setValue("bathroom", "");
-            // setValue("den", "");
-            // setValue("frequency", "");
-
-            // Clear the residenceInfo atom
-            // setResidenceInfo({});
-
-            // Set hasResidence to false
-            // setHasResidence(false);
+    useEffect(() => {
+        async function fetCustomersUser() {
+            try {
+                const data = await getUsersByRole("customer");
+                setCustomersUser(data.users);
+            }
+            catch (err) {
+                console.error("Error fetching customer users: ", err);
+            }
         }
-
-        catch (err) { console.log(err); }
-    }
+        fetCustomersUser();
+    }, []);
 
     const handleSearch = e => {
         setSearchTerm(e.target.value);
     }
 
     //hit Back button
-    const handleRedirect = () => {
-        router.push("/employee/userHome")
-    }
-
-    //store information about the previous page to use in next page
-    const handlePreviousSession = () => {
+    const handleSession = () => {
         sessionStorage.setItem('source', 'managerC');
     }
 
+    const handleResidence = async (customerId, code) => {
+        try {
+            setViewInfo(code); // 0 - show residence info, 1 - show address info
+            sessionStorage.setItem('source', 'managerC');
+            router.push(`/employee/${customerId}`);
+        }
+        catch (err) {
+            console.error("Error to redirect to residence page: ", err);
+        }
+    }
     return (
         <>
             <Row>
@@ -86,23 +64,23 @@ const Customer = () => {
                     />
                 </Col>
                 <Col className="col col-sm-2" style={{ paddingTop: "10px" }}>
-                    <Link style={{ textDecoration: "none" }} href='/register'>
+                    <Link style={{ textDecoration: "none" }} href='/register' onClick={handleSession}>
                         <Button className="btn btn-outline-success btn-sm"
                             variant="primary"
                             style={{ padding: "10px", height: "40px", width: "180px" }}
-                            type="submit"
-                            onClick={handlePreviousSession}>
+                            type="submit">
                             Create customer
                         </Button>
                     </Link>
                 </Col>
                 <Col className="col col-sm-2" style={{ paddingTop: "10px" }}>
-                    <Button className="btn btn-outline-info btn-sm"
-                        variant="primary"
-                        style={{ padding: "10px", height: "40px", width: "180px" }}
-                        onClick={handleRedirect}>
-                        Back to Home Page
-                    </Button>
+                    <Link style={{ textDecoration: "none" }} href="/employee/userHome">
+                        <Button className="btn btn-outline-info btn-sm"
+                            variant="primary"
+                            style={{ padding: "10px", height: "40px", width: "180px" }}>
+                            Back to Home Page
+                        </Button>
+                    </Link>
                 </Col>
             </Row>
             <br />
@@ -115,60 +93,30 @@ const Customer = () => {
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>email</th>
-                            <th> </th>
-                            <th> </th>
+                            <th> Phone </th>
                             <th> </th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredCustomers.map(customer => (
-                            <tr key={customer.id}>
-                                <td>{customer.id}</td>
+                            <tr key={customer._id}>
+                                <td>{customer._id}</td>
                                 <td>{customer.firstName}</td>
                                 <td>{customer.lastName}</td>
                                 <td>{customer.email}</td>
+                                <td>{customer.phone}</td>
                                 <td>
-                                    <Link href='/profile' onClick={handlePreviousSession}>
-                                        <IconTipName Icon={FcSearch} size={30} name="Details" />
-                                    </Link>
+                                    <IconTipName Icon={FcHome} size={30} name="Residence" onClick={() => handleResidence(customer._id, 0)} />
                                 </td>
                                 <td>
-                                    <Link href='/residence' onClick={handlePreviousSession}>
-                                        <IconTipName Icon={FcHome} size={30} name="Residence" />
-                                    </Link>
-                                </td>
-                                <td>
-                                    <Link href='/residenceAddress' onClick={handlePreviousSession}>
-                                        <IconTipName Icon={FaAddressBook} size={30} name="Address" />
-                                    </Link>
-                                </td>
-                                <td>
-                                    <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete" onClick={showDeleteModal} />
+                                    <IconTipName Icon={FaAddressBook} size={30} name="Address" onClick={() => handleResidence(customer._id, 1)} />
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </Row>
-
-            {/* Delete modal */}
-            <Modal show={showModalD} onHide={() => setShowModalD(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Delete employee profile?</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Do you want to delete this employee profile?
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={closeDeleteModal}>
-                        No
-                    </Button>
-                    <Button variant="danger" onClick={handleDeleteRes}>
-                        Yes
-                    </Button>
-                </Modal.Footer>
-            </Modal>
             <br />
         </>
     );

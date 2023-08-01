@@ -15,17 +15,12 @@ const BookingDetails = () => {
     const source = sessionStorage.getItem("source"); //get the session 
 
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
-    // const serviceTypeInfo = watch("serviceType"); // Get the selected serviceType from the form state
-
-    //global variable defined in store.js
-    // const [bookingInfo, setBookingInfo] = useAtom(bookingInfoAtom);
 
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
     const [bookingIdInfo, setBookingIdInfo] = useState([]);
     const [employeeUsers, setEmployeeUsers] = useState([]);
     const [customerUser, setCustomerUser] = useState([]);
-    // const [hasResidence, setHasResidence] = useState(false);
 
     //Booking data
     useEffect(() => {
@@ -38,7 +33,7 @@ const BookingDetails = () => {
                     const data = await getBookingById(bookingId);
                     setBookingIdInfo(data.bookings);
 
-                    const customer  = await getUserById(data.bookings.customerId);
+                    const customer = await getUserById(data.bookings.customerId);
                     setCustomerUser(customer.user);
 
                     //set the value retrieve from API to variables to show to user
@@ -77,10 +72,16 @@ const BookingDetails = () => {
 
     const handleRedirect = () => {
         //if manager go back to previous page
-        source === "managerS" ? router.push("/subscription") : router.push("/customer/booking");
-
-        //clear the session storage value
-        sessionStorage.removeItem(source);
+        if (source === "managerS") {
+            //clear the session storage value
+            sessionStorage.removeItem(source);
+            router.push("/employee/subscription")
+        }
+        else {
+            //clear the session storage value
+            sessionStorage.removeItem(source);
+            router.push("/customer/booking");
+        }
     }
 
     async function submitForm(data) {
@@ -238,7 +239,6 @@ const BookingDetails = () => {
                             <Button variant="primary"
                                 className="btn btn-outline-success"
                                 type="submit"
-                                disable={Object.keys(errors).length > 0}
                                 style={{ padding: "15px", margin: "1px", width: "50%" }}>Save</Button>
                         </Col>
                     </Row>
