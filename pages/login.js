@@ -1,105 +1,98 @@
-import  React, { useState } from "react";
-import { Card, Form, Alert, Button, Container } from "react-bootstrap";
+import React, { useState } from "react";
+import { Form, Alert, Button, Container, Row, Col } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 import { authenticateUser } from "../lib/authenticate";
+import { getUserInfo } from "../lib/user";
 import { useRouter } from "next/router";
 import { useAtom } from "jotai";
-import { userInfoAtom, residenceInfoAtom } from "../store";
-import { getUserInfo } from "../lib/user";
+import { userInfoAtom } from "../store";
 
-export default function Login(props) {
-  const [user, setUser] = useState("");
-  const [password, setPassword] = useState("");
-  const [warning, setWarning] = useState("");
+export default function Login() {
+  const source = sessionStorage.getItem("source"); //get the session 
+
+  //control form information
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   //global variable to store customer information and get userName
-  const [userInfo, setuserInfo] = useAtom(userInfoAtom);
-  const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+
+  // Add this at the top of the Login component
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const router = useRouter();
 
-  //get where login page comes from
-  const source = sessionStorage.getItem('source');
-
-  // useEffect(() => {
-  //   console.log(`userName was changed to: ${userName}`);
-  // }, [userName]);
-
-  // useEffect(() => {
-  //   console.log(`customer was changed to: ${userInfo.firstName}`);
-  // }, [userInfo.firstName]);
-
-  // useEffect(() => {
-  //   console.log(`Residence info: ${residenceInfo.houseType}`);
-  // }, [residenceInfo.houseType]);
-
-  async function submitForm(e) {
-    e.preventDefault();
-
-    if (user === "" || password === "") {
-      setWarning('Please fill all required fields above')
-      return
-    }
+  //login user
+  async function submitForm(data) {
     try {
-      //get the userName
-      await authenticateUser(user, password)
-  
-      const customer = await getUserInfo();
-      setuserInfo({
-        username: customer.user.username,
-        firstName: customer.user.firstName,
-        lastName: customer.user.lastName,
-        role: customer.role,
+
+      //authenticate user logon
+      await authenticateUser(data.username, data.password)
+
+      //get user information
+      const userData = await getUserInfo();
+
+      //set user info into global variable
+      await setUserInfo({
+        username: userData.user.username,
+        firstName: userData.user.firstName,
+        lastName: userData.user.lastName,
+        email: userData.user.email,
+        phone: userData.user.phone,
+        role: userData.user.role
       });
 
-      if (source === "questionnaire" && userInfo.role === "customer") { router.push("/residence"); }
-      else { router.push("/userHome"); }
-
+      if (source === "questionnaire") {
+        router.push("/residence");
+      }
+      else {
+        //render the correct userHome
+        userData.user.role === "customer"
+          ? router.push("/customer/userHome")
+          : router.push("employee/userHome");
+      }
     }
     catch (err) {
-      setWarning(err.message);
+      if (err.message.includes("500")) {
+        setErrorMessage("Missing username or password.");
+      } else if (err.message.includes("404")) {
+        setErrorMessage("User and password combination not found.");
+      } else {
+        setErrorMessage("An error occurred. Please try again later.");
+      }
     }
   }
   return (
     <>
-      <br />
-      <Container className="d-fluid">
-        <Card bg="light" style={{ width: "30%" }}>
-          <Card.Body>
-            <h2>Login</h2>
-            <br />
-            Enter your user ID and password
-          </Card.Body>
-        </Card>
-        <br />
-        <Form onSubmit={submitForm}>
-          <Form.Group style={{ width: "30%" }}>
-            <Form.Label>Username:</Form.Label>
-            <Form.Control
+      <Row className="mb-9" style={{ marginTop: '110px' }}>
+        <p style={{ fontWeight: 'bold', fontSize: '4rem', textAlign: "center" }}>  Login
+        </p>
+      </Row>
+      <Form onSubmit={handleSubmit(submitForm)} className="container mt-3 mb-3">
+        <Row className="mb-9" >
+          <Form.Group className="col col-sm-6" style={{ marginTop: '70px', marginLeft: '350px' }}>
+            <Form.Control className={errors.username && "inputErrors"}{...register("username", { required: true })}
               type="text"
-              value={user}
-              id="userName"
-              name="userName"
-              onChange={(e) => setUser(e.target.value)}
-            />
+              id="username"
+              name="username"
+              placeholder="User" />
+            <br />
+            {errors.username?.type === "required" && (<Alert variant="danger">User Name is required</Alert>)}
           </Form.Group>
-          <br />
-          <Form.Group style={{ width: "30%" }}>
-            <Form.Label>Password:</Form.Label>
-            <Form.Control
+        </Row>
+        <br />
+        <Row className="mb-9">
+          <Form.Group className="col col-sm-6" style={{ marginLeft: '350px' }}>
+            <Form.Control className={errors.password && "inputErrors"}{...register("password", { required: true })}
               type="password"
-              value={password}
               id="password"
               name="password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
+              placeholder="Password" />
+            <br />
+            {errors.password?.type === "required" && (<Alert variant="danger">Password is required</Alert>)}
           </Form.Group>
-          {warning && (
-            <>
-              <br />
-              <Alert variant="danger">{warning}</Alert>
-            </>
-          )}
-          <br />
+        </Row>
+        <br /><br />
+        <Row className="mb-9" style={{ marginLeft: '450px' }} >
           <Button variant="primary" className="btn btn-outline-success btn-sm" style={{ padding: "10px", height: "40px", width: "180px" }} type="submit">
             Login
           </Button>
@@ -107,10 +100,12 @@ export default function Login(props) {
           <Button href="/register" variant="primary" className="btn btn-outline-info btn-sm" style={{ padding: "10px", height: "40px", width: "180px" }} type="submit">
             Create account
           </Button>
-        </Form>
-        <br /> {/* This helps the footer go down so that it looks clean */}
-        <br /> <br /> <br /> <br /> <br /> <br /> <br /><br /><br />
-      </Container>
+          <br />
+          <br />
+        </Row>
+      </Form>
+      {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
+      <br /> <br /> <br /> <br /> <br /> <br /> <br /><br /><br />
     </>
   );
 }

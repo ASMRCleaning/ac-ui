@@ -1,17 +1,21 @@
-import { Navbar, Nav, Form, Button, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, Button, NavDropdown, Container } from 'react-bootstrap';
 import { isAuthenticated, removeToken } from "../lib/authenticate";
 import { useRouter } from "next/router";
 import Link from 'next/link';
 import { useAtom } from "jotai";
 import { userInfoAtom } from "../store";
 
-const Header = (props) => {
+const Header = () => {
     //set userName global variable to show in header navbar
     const [userInfo, setUserInfo] = useAtom(userInfoAtom);
     const router = useRouter();
 
     function logout() {
         removeToken();
+
+        //clear the session storage value
+        sessionStorage.removeItem('source');
+        
         router.push("/");
     }
 
@@ -74,18 +78,25 @@ const Header = (props) => {
                             <Nav.Item className="ml-auto">
                                 {!isAuthenticated() ? <Nav.Link href="/login">Login</Nav.Link> :
                                     <Nav.Item >
-                                        <NavDropdown  title={`Hi, ${userInfo.firstName}`} id="basic-nav-dropdown">
-                                             <NavDropdown.Item>  
-                                                <Link style={{ textDecoration: "none" }} href="/userHome"> User Home Page </Link></NavDropdown.Item>
-                                            <NavDropdown.Item>
-                                                <Link style={{ textDecoration: "none" }} href="/profile"> Profile </Link></NavDropdown.Item>
-                                            <NavDropdown.Item>
-                                                <Link style={{ textDecoration: "none" }} href="/residence">Residence</Link></NavDropdown.Item> 
-                                            <NavDropdown.Item>
-                                                <Link style={{ textDecoration: "none" }} href="/residenceAddress">Address</Link></NavDropdown.Item>
+                                        <NavDropdown title={`Hi, ${userInfo.firstName}`} id="basic-nav-dropdown">
+                                            {userInfo.role === "customer" && (<>
                                              <NavDropdown.Item>
-                                                <Link style={{ textDecoration: "none" }} href="/booking"> Booking</Link></NavDropdown.Item>
+                                                <Link style={{ textDecoration: "none" }} href="/customer/userHome"> Home Page </Link></NavDropdown.Item>
+                                                <NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/customer/residenceAddress">Address</Link></NavDropdown.Item>
+                                                <NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/customer/booking"> Booking</Link>
+                                                </NavDropdown.Item>
+                                                <NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/profile"> Profile </Link></NavDropdown.Item>
+                                                <NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/customer/residence">Residence</Link></NavDropdown.Item>
+                                            </>)}
+                                            {userInfo.role !== "customer" &&(
+                                            <NavDropdown.Item>
+                                                <Link style={{ textDecoration: "none" }} href="/employee/userHome"> Home Page </Link></NavDropdown.Item>)}
                                             <NavDropdown.Item onClick={logout}> Logout</NavDropdown.Item>
+
                                         </NavDropdown>
                                     </Nav.Item>}
                             </Nav.Item>
@@ -93,20 +104,17 @@ const Header = (props) => {
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
-                    {/* <Nav.Item>
-                        <Container className="d-grid gap-1">
-                            <Button className="btn btn-outline-success" href="/questionnaire">Get a free quote here</Button>
-                        </Container>
-                    </Nav.Item> */}
+                    {userInfo.role === "customer" || !isAuthenticated() && (
+                        <Nav.Item>
+                            <Container className="d-grid gap-1">
+                                <Link style={{ textDecoration: "none" }} href="/residence">
+                                    <Button className="btn btn-outline-success" >Get a free quote here</Button>
+                                </Link>
+                            </Container>
+                        </Nav.Item>
+                    )}
                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    <Form className="d-flex">
-                        <Form.Control className="form-control me-sm-2"
-                            type="search"
-                            placeholder="Search"
-                        />
-                        <Button className="btn btn-secondary my-2 my-sm-0">Search</Button>
-                    </Form>
-                </Nav>
+                </Nav >
             </Navbar >
         </>
     );

@@ -2,12 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Form, Button, Image, Alert, Col, Card, Modal } from "react-bootstrap";
 import { useRouter } from 'next/router';
-import { registerResidence, getResidence, updateResidence } from "../lib/residence";
+import { registerResidence, getResidence, updateResidence } from "../../lib/residence";
 import { useAtom } from "jotai";
-import { residenceInfoAtom } from "../store";
+import { residenceInfoAtom } from "../../store";
 import { useForm } from 'react-hook-form';
 
 const Residence = () => {
+    //get the session 
+    const source = sessionStorage.getItem("source");
 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
@@ -23,18 +25,13 @@ const Residence = () => {
     //get where login page comes from
     // const source = sessionStorage.getItem('source');
 
-    // Check the object changes
-    // useEffect(() => {
-    //     console.log(residenceInfo);
-    // }, [residenceInfo]);
-
     useEffect(() => {
         //retrieve residence information when the component mounts
         async function fetchResidence() {
             const data = await getResidence();
 
             //if GET: residence retrieves data set it in residenceInfo and form variables
-            if (data !== null) {
+            if (data) {
                 setResidenceInfo({
                     houseType: data.residence.houseType,
                     size: data.residence.size,
@@ -44,7 +41,6 @@ const Residence = () => {
                     bedroom: data.residence.bedroom,
                     bathroom: data.residence.bathroom,
                     den: data.residence.den,
-                    frequency: data.residence.frequency,
                     address: {
                         streetAddress: data.residence.address?.streetAddress,
                         unit: data.residence.address?.unit,
@@ -71,14 +67,17 @@ const Residence = () => {
     }, []);
 
     const handleRedirect = () => {
-        router.push("/userHome")
+        //if manager go back to previous page
+        source === "managerC" ? router.push("/employee/customer") : router.push("/customer/userHome");
+
+        //clear the session storage value
+        sessionStorage.removeItem('source');
     }
 
     const handleRedirectQ = () => {
         router.push("/residence")
     }
 
-    console.log(hasResidence);
     async function submitForm(data) {
         //set the new info in a new variable
         const updateResidenceInfo = {
@@ -100,7 +99,7 @@ const Residence = () => {
             try {
                 //call api to store info
                 await registerResidence(updateResidenceInfo);
-                router.push('/result');
+                router.push('/booking/create-booking');
 
             } catch (err) { console.log(err); }
         }
@@ -109,7 +108,6 @@ const Residence = () => {
             try {
                 //call api to store info
                 const res = await updateResidence(updateResidenceInfo);
-                console.log("goes to update");
 
                 //show modal with update result
                 setResModal(res);

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Container, Col, Row, Image, Form, Alert, Button, Modal, Card } from "react-bootstrap";
+import { Container, Col, Row, Image, Form, Alert, Button, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAtom } from "jotai";
-import { residenceInfoAtom } from "../store";
+import { residenceInfoAtom, userInfoAtom } from "../../store";
 import { useRouter } from "next/router";
-import { getResidence, removeResidence, updateResidence } from "../lib/residence";
+import { getResidence, removeResidence, updateResidence } from "../../lib/residence";
 
 const Residence = () => {
     //control form information
@@ -12,6 +12,7 @@ const Residence = () => {
 
     //global variable defined in store.js
     const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
+    const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
@@ -37,8 +38,7 @@ const Residence = () => {
                     pet: data.residence.pet,
                     bedroom: data.residence.bedroom,
                     bathroom: data.residence.bathroom,
-                    den: data.residence.den,
-                    frequency: data.residence.frequency
+                    den: data.residence.den
                 });
                 //set the value retrieve from API to variables to show to user
                 setValue("houseType", data.residence.houseType);
@@ -48,19 +48,20 @@ const Residence = () => {
                 setValue("pet", data.residence.pet);
                 setValue("bedroom", data.residence.bedroom);
                 setValue("bathroom", data.residence.bathroom);
-                setValue("den", data.residence.den);
-                setValue("frequency", data.residence.frequency);
+                setValue("den", data.residence.den)
 
                 //control if user has or not residence to perform edit data or redirect to residence to create a new one
                 setHasResidence(true);
             }
         }
         fetchResidence();
+
     }, []);
 
     //hit Back button
     const handleRedirect = () => {
-        router.push("/userHome")
+        if (userInfo.role === "customer") { return router.push("/customer/userHome"); }
+        else { return router.push("/employee/customer"); }
     }
 
     //hit Delete button
@@ -88,7 +89,6 @@ const Residence = () => {
             setValue("bedroom", "");
             setValue("bathroom", "");
             setValue("den", "");
-            setValue("frequency", "");
 
             // Clear the residenceInfo atom
             setResidenceInfo({});
@@ -110,8 +110,7 @@ const Residence = () => {
             pet: data.pet,
             bedroom: parseInt(data.bedroom),
             bathroom: parseInt(data.bathroom),
-            den: parseInt(data.den) || 0,
-            frequency: data.frequency
+            den: parseInt(data.den) || 0
         };
         //update jotai residence object
         await setResidenceInfo(updateResInfo);
@@ -247,21 +246,6 @@ const Residence = () => {
                                         placeholder="Optional information" />
                                     <br />
                                     {errors.den?.type === "max" && (<Alert variant="danger">Den/Office must be less than or equal 10</Alert>)}
-                                </Form.Group>
-                            </Row>
-                            <br />
-                            <Row className="mb-6">
-                                <Form.Group className="col col-sm-9">
-                                    <Form.Label>How often do you want the cleaning service?</Form.Label>
-                                    <Form.Select className={errors.frequency && "inputErrors"} {...register("frequency", { required: true })} >
-                                        <option value="">Select</option>
-                                        <option value="weekly">Weekly</option>
-                                        <option value="bi-weekly">Bi-Weekly</option>
-                                        <option value="monthly">Monthly</option>
-                                        <option value="occasionally">Occasionally</option>
-                                    </Form.Select>
-                                    <br />
-                                    {errors.frequency && errors.frequency.type === "required" && (<Alert variant="danger">Frequency is required</Alert>)}
                                 </Form.Group>
                             </Row>
                             <br />

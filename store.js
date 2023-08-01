@@ -1,15 +1,19 @@
-import { atom } from "jotai";
+import { atom } from 'jotai';
 
 //store customer information
 export const userInfoAtom = atom({
     'username': '',
     'firstName':'',
     'lastName':'',
+    'email':'',
+    'phone':'',
     'role':'',
+    'userId': '',
 })
 
 //residenceAddress information 
 export const residenceInfoAtom = atom({
+    'residenceId': '',
     'houseType': '',
     'size': 0,
     'empty': '',
@@ -18,7 +22,6 @@ export const residenceInfoAtom = atom({
     'bedroom': 0,
     'bathroom': 0,
     'den': 0,
-    'frequency': '',
     'address': {
         'streetAddress': '',
         'unit': '',
@@ -27,3 +30,24 @@ export const residenceInfoAtom = atom({
         'province': '',
         'country': '',}
 })
+
+//residenceAddress information 
+export const bookingInfoAtom = atom({
+    '_id': 0,
+    'employee': '',
+    'customer': '',
+    'residenceId': '',
+    'status': '',
+    'serviceType': '',
+    'frequency': '',
+    'startDate': '',
+    'endDate': '',
+    'specification': '',
+});
+
+export const viewInfoAtom = atom({
+    'code': '',
+});
+
+
+
