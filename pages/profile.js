@@ -46,17 +46,8 @@ const Profile = () => {
     }, []);
 
     const handleRedirect = () => {
-        //if manager go back to previous page
-        // if(source === "managerC")
-        //     router.push("/employee/customer")
-        // else if(source === "managerE")
-        //     router.push("/employee/employee")
-        // else router.push("/login");
-        if(userInfo.role === "customer"){ return router.push("/customer/userHome")}
-        else{ return router.push("/employee/employee")}
-
-        //clear the session storage value
-        sessionStorage.removeItem('source');
+        if (userInfo.role === "customer") { return router.push("/customer/userHome") }
+        else { return router.push("/employee/userHome") }
     }
 
     async function submitForm(data) {
@@ -172,7 +163,7 @@ const Profile = () => {
                             {errors.password2?.type === "validate" && (<Alert variant="danger">Password do not match</Alert>)}
                         </Form.Group>
                     </Row> */}
-                    <br /><br/>
+                    <br /><br />
                     <Row className="mb-3" style={{ padding: "10px" }}>
 
                         <Col>

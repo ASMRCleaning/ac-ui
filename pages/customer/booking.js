@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Modal, Image } from "react-bootstrap";
+import { Row, Col, Button, Modal, Image, Card } from "react-bootstrap";
 import Link from "next/link";
 import { FcSearch } from "react-icons/fc" //icon detail 
 import { AiTwotoneDelete } from "react-icons/ai"; //icon delete
@@ -120,39 +120,50 @@ const Subscription = () => {
             <br />
             <br />
             <Row style={{ marginTop: "70px", marginBottom: "70px" }}>
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th> Subscription ID </th>
-                            <th> Service </th>
-                            <th> Frequency </th>
-                            <th> Start Date </th>
-                            <th> End Date </th>
-                            <th> Status </th>
-                            <th> </th>
-                            <th> </th>
-                            {/* <th> </th> */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {bookings.map(booking => (
-                            <tr key={booking._id}>
-                                <td>{booking._id}</td>
-                                <td>{capitalizeFirstLetter(booking.serviceType)}</td>
-                                <td>{capitalizeFirstLetter(booking.frequency)}</td>
-                                <td>{formatBookingDate(booking.startDate)}</td>
-                                <td>{formatBookingDate(booking.endDate)}</td>
-                                <td>{capitalizeFirstLetter(booking.status)}</td>
-                                <td>
-                                    <IconTipName Icon={FcSearch} size={30} name="Details" onClick={() => handleBookingDetails(booking._id)} />
-                                </td>
-                                <td>
-                                    <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete" onClick={() => showDeleteModal(booking._id)} />
-                                </td>
+                {bookings.length <= 0 ?
+                    <Row>
+                        <Card>
+                            <Card.Header>
+                                <h3 style={{ textAlign: "center", fontSize: "2.5rem" }}>
+                                    You do not have any subscription entry information in your profile. 
+                                </h3>
+                            </Card.Header>
+                        </Card>
+                    </Row> :
+                    <table className="table table-striped">
+                        <thead>
+                            <tr>
+                                <th> Subscription ID </th>
+                                <th> Service </th>
+                                <th> Frequency </th>
+                                <th> Start Date </th>
+                                <th> End Date </th>
+                                <th> Status </th>
+                                <th> </th>
+                                <th> </th>
+                                {/* <th> </th> */}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {bookings.map(booking => (
+                                <tr key={booking._id}>
+                                    <td>{booking._id}</td>
+                                    <td>{capitalizeFirstLetter(booking.serviceType)}</td>
+                                    <td>{capitalizeFirstLetter(booking.frequency)}</td>
+                                    <td>{formatBookingDate(booking.startDate)}</td>
+                                    <td>{formatBookingDate(booking.endDate)}</td>
+                                    <td>{capitalizeFirstLetter(booking.status)}</td>
+                                    <td>
+                                        <IconTipName Icon={FcSearch} size={30} name="Details" onClick={() => handleBookingDetails(booking._id)} />
+                                    </td>
+                                    <td>
+                                        <IconTipName Icon={AiTwotoneDelete} size={30} name="Delete" onClick={() => showDeleteModal(booking._id)} />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                }
             </Row>
             <Row style={{ marginTop: "70px", marginLeft: "300px" }}>
                 <Col className="col col-sm-4" style={{ paddingTop: "10px" }}>
@@ -163,12 +174,13 @@ const Subscription = () => {
                     </Link>
                 </Col>
                 <Col className="col col-sm-4" style={{ paddingTop: "10px" }}>
+                    <Link href="/customer/userHome">
                     <Button className="btn btn-outline-info btn-sm"
                         variant="primary"
-                        style={{ padding: "10px", height: "40px", width: "180px" }}
-                        onClick={handleRedirect}>
+                        style={{ padding: "10px", height: "40px", width: "180px" }}>
                         Back to Home Page
                     </Button>
+                    </Link>
                 </Col>
             </Row>
             <br /><br /><br /><br /><br /><br /><br /><br />

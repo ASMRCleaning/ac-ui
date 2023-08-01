@@ -3,13 +3,13 @@ import { Row, Col, Button, Modal } from "react-bootstrap";
 import Link from "next/link";
 import { FcSearch } from "react-icons/fc" //icon detail 
 import { AiTwotoneDelete } from "react-icons/ai"; //icon delete
-import IconTipName from "../components/IconTipName"; //add icon format and action
+import IconTipName from "../../components/IconTipName"; //add icon format and action
 import { useAtom } from "jotai";
-import { userInfoAtom } from "../store";
+import { userInfoAtom } from "../../store";
 import { useRouter } from "next/router";
-import { getAllBooking, removeBooking } from "../lib/booking";
-import { getUserById } from "../lib/user";
-import { formatBookingDate, capitalizeFirstLetter } from "../components/CommonFunction";
+import { getAllBooking, removeBooking } from "../../lib/booking";
+import { getUserById } from "../../lib/user";
+import { formatBookingDate, capitalizeFirstLetter } from "../../components/CommonFunction";
 
 const Subscription = () => {
     const router = useRouter();
@@ -97,7 +97,6 @@ const Subscription = () => {
         catch (err) {
             console.error("Error to fetching booking by Id: ", err);
         }
-
     }
     return (
         <>

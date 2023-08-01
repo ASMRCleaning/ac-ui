@@ -8,8 +8,12 @@ import { userInfoAtom } from "../store";
 import Link from "next/link";
 
 const RegisterPage = () => {
-    //get the session 
-    const source = sessionStorage.getItem("source");
+    const source = sessionStorage.getItem("source"); //get the session
+    const router = useRouter();
+    const [showModal, setShowModal] = useState(false);
+    const [resModal, setResModal] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);     // Add this at the top of the Login component
+    const [isManager, setIsManager] = useState(false);
 
     //control form information
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -20,13 +24,6 @@ const RegisterPage = () => {
     //global variable defined in store.js
     const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
-    const [showModal, setShowModal] = useState(false);
-    const [resModal, setResModal] = useState(null);
-
-    const router = useRouter();
-
-    const [isManager, setIsManager] = useState(false);
-
     useEffect(() => {
         //get if the user logged in is a manager or not
         setIsManager(userInfo.role === "manager" ? true : false);
@@ -35,10 +32,21 @@ const RegisterPage = () => {
     //hit Back button
     const handleRedirect = () => {
         //if manager go back to previous page
-        source === "managerC" ? router.push("/employee/customer") : router.push("/login");
-
-        //clear the session storage value
-        sessionStorage.removeItem('source');
+        if (source === "managerC") {
+            //clear the session storage value
+            sessionStorage.removeItem('source');
+            router.push("/employee/customer")
+        }
+        else if (source === "managerE") {
+            //clear the session storage value
+            sessionStorage.removeItem('source');
+            router.push("/employee/employee")
+        }
+        else {
+            //clear the session storage value
+            sessionStorage.removeItem('source');
+            router.push("/login");
+        }
     }
 
     //update residence information
@@ -64,7 +72,16 @@ const RegisterPage = () => {
             setResModal(res);
             setShowModal(true);
         }
-        catch (err) { console.log(err); }
+        catch (err) {
+            if (err.message === "500") {
+                setErrorMessage("The username already exist. Please try another one");
+            } else if (typeof err === "object" && err.message) {
+                setErrorMessage(err.message);
+            }
+            else {
+                setErrorMessage("An unknown error occurred.")
+            }
+        }
     }
 
     return (
@@ -125,7 +142,7 @@ const RegisterPage = () => {
                                     <option value="manager">Manager</option>
                                 </Form.Select>
                                 <br />
-                                {errors.role && errors.frequency.role === "required" && (<Alert variant="danger">User view is required</Alert>)}
+                                {errors.role && errors.role === "required" && (<Alert variant="danger">User view is required</Alert>)}
                             </Form.Group>
                         </Row>
                     </>)}
@@ -190,6 +207,8 @@ const RegisterPage = () => {
                         {errors.password2?.type === "validate" && (<Alert variant="danger">Password do not match</Alert>)}
                     </Form.Group>
                 </Row>
+                <br />
+                {errorMessage && (<Row className="col col-sm-9" ><Alert variant="danger"> {errorMessage} </Alert></Row>)}
                 <Row className="mb-3" style={{ padding: "10px" }}>
                     <br />
                     <Col>
@@ -208,6 +227,7 @@ const RegisterPage = () => {
                     </Col>
                 </Row>
             </Form>
+
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Profile created</Modal.Title>
@@ -216,18 +236,9 @@ const RegisterPage = () => {
                     {resModal && (<p>Your profile has been successfully created.</p>)}
                 </Modal.Body>
                 <Modal.Footer>
-                    {isAuthenticated() ? (
-                        <Link href="/employee/customer">
-                         <Button variant="primary" onClick={() => setShowModal(false)}>
-                            Close
-                        </Button>
-                        </Link>
-                    ):
-                    <Link href="/login">
-                        <Button variant="primary" onClick={() => setShowModal(false)}>
-                            Close
-                        </Button>
-                    </Link>}
+                    <Button variant="primary" onClick={() => { setShowModal(false); handleRedirect(); }}>
+                        Close
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </>
