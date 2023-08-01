@@ -43,8 +43,6 @@ const RegisterPage = () => {
             router.push("/employee/employee")
         }
         else {
-            //clear the session storage value
-            sessionStorage.removeItem('source');
             router.push("/login");
         }
     }

@@ -46,8 +46,16 @@ const Profile = () => {
     }, []);
 
     const handleRedirect = () => {
-        if (userInfo.role === "customer") { return router.push("/customer/userHome") }
-        else { return router.push("/employee/userHome") }
+        if (source === "customer") {
+            //clear the session storage value
+            sessionStorage.removeItem('source');
+            return router.push("/customer/userHome")
+        }
+        else {
+            //clear the session storage value
+            sessionStorage.removeItem('source');
+            return router.push("/employee/userHome")
+        }
     }
 
     async function submitForm(data) {

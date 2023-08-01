@@ -42,7 +42,7 @@ export default function Login() {
       });
 
       if (source === "questionnaire") {
-        router.push("/residence");
+        router.push("/customer/residence");
       }
       else {
         //render the correct userHome
