@@ -107,7 +107,7 @@ const Header = () => {
                     {userInfo.role === "customer" || !isAuthenticated() && (
                         <Nav.Item>
                             <Container className="d-grid gap-1">
-                                <Link style={{ textDecoration: "none" }} href="/residence">
+                                <Link style={{ textDecoration: "none" }} href="/customer/residence">
                                     <Button className="btn btn-outline-success" >Get a free quote here</Button>
                                 </Link>
                             </Container>
