@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Modal } from "react-bootstrap";
+import { Row, Col, Button, Modal, Alert } from "react-bootstrap";
 import Link from "next/link";
 import { FcSearch } from "react-icons/fc"         //icon detail 
 import { AiTwotoneDelete } from "react-icons/ai"; //icon delete
@@ -19,7 +19,7 @@ const Subscription = () => {
     const [bookingIdDel, setBookingIdDel] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModalD, setShowModalD] = useState(false);
-    const [visitService, setVisitService] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     //global variable from store.js
     const [userInfo, setUserInfo] = useAtom(userInfoAtom);
@@ -31,7 +31,6 @@ const Subscription = () => {
             customerName.toLocaleLowerCase().includes(searchTerm.toLowerCase())
         );
     });
-
 
     //Booking data
     useEffect(() => {
@@ -51,6 +50,7 @@ const Subscription = () => {
                 setUsersBooking(userData);
             }
             catch (err) {
+                setErrorMessage("Something went wrong while load the bookings. Please try again later.");
                 console.error("Error fetching bookings: ", err);
             }
         }
@@ -69,6 +69,7 @@ const Subscription = () => {
 
     //delete booking data
     async function handleDelete() {
+        console.log(bookingIdDel);
         if (bookingIdDel) {
             try {
                 await removeBooking(bookingIdDel);
@@ -77,7 +78,10 @@ const Subscription = () => {
                 setBookings((prevBooking) => prevBooking.filter((booking) => booking._id !== bookingIdDel));
                 closeDeleteModal()
             }
-            catch (err) { console.log(err); }
+            catch (err) { 
+                setErrorMessage("Something went wrong while deleting the booking. Please try again later.");
+                closeDeleteModal()
+         }
         }
     }
 
@@ -144,6 +148,7 @@ const Subscription = () => {
             </Row>
             <br />
             <br />
+            {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
             <Row style={{ marginTop: "70px", marginBottom: "70px" }}>
                 <table className="table table-striped">
                     <thead>

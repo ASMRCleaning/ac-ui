@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Row, Card, Pagination, Button, Image, Modal } from "react-bootstrap";
-import { useRouter } from "next/router";
+import { Row, Card, Pagination, Button, Image, Modal, Alert } from "react-bootstrap";
 import { useAtom } from "jotai";
-import { userInfoAtom, bookingInfoAtom } from "../../store"
+import { userInfoAtom } from "../../store"
 import { getUserInfo } from "../../lib/user";
 import { getBookingByCustomer, updateVisitService } from "../../lib/booking";
 import { FcCancel } from "react-icons/fc";
@@ -12,16 +11,16 @@ import IconTipName from "../../components/IconTipName"; //add icon format and ac
 const UserHome = () => {
     const [page, setPage] = useState(1);
     const itemPerPage = 5;
-    const router = useRouter();
+    const [bookingInfo, setBookingInfo] = useState([]);
     const [hasSubscription, setHasSubscription] = useState(false);
     const [userVisit, setUserVisit] = useState([]);
     const today = new Date().toISOString();
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     //global variable
     const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-    const [bookingInfo, setBookingInfo] = useAtom(bookingInfoAtom);
 
     //filter upcoming and past visits
     const filteredUpComingVisit = userVisit.filter((visit) => visit.date >= today);
@@ -34,27 +33,6 @@ const UserHome = () => {
     const endIndex = startIndex + itemPerPage;
 
     const pageUpcomingVisits = filteredUpComingVisit.slice(startIndex, endIndex);
-
-    //cancel visit
-    const handleCancelVisit = async (visitId) => {
-        const status = "cancelled"
-        try {
-            //call API PUT by bookingId
-            const res = await updateVisitService(visitId, status);
-
-            // Update the visit status in the local state
-            setUserVisit(prevVisitService =>
-                prevVisitService.map(visit => (visit._id === visitId ? { ...visit, status } : visit))
-            );
-
-            //show modal with update result
-            setResModal(res);
-            setShowModal(true);
-
-        } catch (err) {
-            console.error(`Error to update visit status:`, err);
-        }
-    }
 
     useEffect(() => {
         async function fetchUserLoggedIn() {
@@ -94,8 +72,30 @@ const UserHome = () => {
             }
         }
         fetchUserSubscription();
-
     }, []);
+
+    //cancel visit
+    const handleCancelVisit = async (visitId) => {
+        const status = "cancelled"
+        try {
+            //call API PUT by bookingId
+            const res = await updateVisitService(visitId, status);
+
+            // Update the visit status in the local state
+            setUserVisit(prevVisitService =>
+                prevVisitService.map(visit => (visit._id === visitId ? { ...visit, status } : visit))
+            );
+
+            //show modal with update result
+            setResModal(res);
+            setShowModal(true);
+
+        } catch (err) {
+            setErrorMessage("Something went wrong while load cleaning services. Please try again later.");
+            console.error(`Error to update visit status:`, err);
+        }
+    }
+
     return (
         <>
             <Row>
@@ -106,6 +106,7 @@ const UserHome = () => {
                 </Card>
             </Row>
             <br /><br />
+            {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
             <Row>
                 <Card style={{ margin: "10px" }}>
                     <Card.Body style={{ paddingLeft: "10%", paddingRight: "95px" }}>

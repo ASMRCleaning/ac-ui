@@ -6,15 +6,13 @@ import { Container } from "react-bootstrap";
 const Layout = (props) => {
     return (
         <>
-            <Header />
-            <br />
-            <Container>
-                {props.children}
-            </Container>
-            <br />
-            <Footer/>
-        </>
-    )
-}
+        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+          <Header />
+          <Container style={{ flex: 1 }}>{props.children}</Container>
+          <Footer />
+        </div>
+      </>
+    );
+};
 
 export default Layout

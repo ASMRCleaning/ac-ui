@@ -1,9 +1,7 @@
 
 import React, { useEffect, useState } from "react";
-import { Container, Row, Form, Button, Image, Alert, Col, Card, Modal } from "react-bootstrap";
+import { Container, Row, Form, Button, Image, Alert, Col, Modal } from "react-bootstrap";
 import { useRouter } from "next/router";
-// import { useAtom } from "jotai";
-// import { bookingInfoAtom } from "../../store";
 import { useForm } from "react-hook-form";
 import { getBookingById, updateBookingById } from "../../lib/booking";
 import { formatBookingDate, capitalizeFirstLetter, formatDateToISO, disableCapitalizeFirstLetter } from "../../components/CommonFunction";
@@ -13,14 +11,13 @@ const BookingDetails = () => {
     const router = useRouter();
     const { bookingId } = router.query;
     const source = sessionStorage.getItem("source"); //get the session 
-
-    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
-
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
     const [bookingIdInfo, setBookingIdInfo] = useState([]);
     const [employeeUsers, setEmployeeUsers] = useState([]);
     const [customerUser, setCustomerUser] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
 
     //Booking data
     useEffect(() => {
@@ -48,6 +45,7 @@ const BookingDetails = () => {
                     setValue("specification", capitalizeFirstLetter(data.bookings.specification));
                 }
                 catch (err) {
+                    setErrorMessage("Something went wrong while load bookings. Please try again later.");
                     console.error("Error fetching bookings: ", err);
                 }
             }
@@ -64,6 +62,7 @@ const BookingDetails = () => {
                 setEmployeeUsers(data.users);
             }
             catch (err) {
+                setErrorMessage("Something went wrong while load employees. Please try again later.");
                 console.error("Error fetching employee users: ", err);
             }
         }
@@ -108,7 +107,9 @@ const BookingDetails = () => {
             setShowModal(true);
 
 
-        } catch (err) { console.log(err); }
+        } catch (err) { 
+            setErrorMessage("Something went wrong while update bookings. Please try again later.");
+            console.error("Error update booking: ", err); }
     }
 
     return (
@@ -122,6 +123,7 @@ const BookingDetails = () => {
                     <p style={{ fontWeight: "bold", fontSize: "2rem", textAlign: "center" }}>  Subscription Number: {bookingId} </p>
                 </Row>
                 <br />
+                {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
                 <Form onSubmit={handleSubmit(submitForm)} className="container mt-3 mb-3">
                     <Row className="mb-6">
                         <Form.Group className="col col-sm-6">

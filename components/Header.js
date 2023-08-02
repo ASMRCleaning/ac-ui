@@ -15,10 +15,9 @@ const Header = () => {
 
         //clear the session storage value
         sessionStorage.removeItem('source');
-        
+
         router.push("/");
     }
-
     return (
         <>
             <Navbar className="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -37,20 +36,19 @@ const Header = () => {
                                 <NavDropdown title="About" id="basic-nav-dropdown">
                                     <NavDropdown.Item>
                                         <Link href="/about" style={{ textDecoration: "none" }}>About Us</Link></NavDropdown.Item>
-                                    <NavDropdown.Item href="https://blog.nationwide.com/home/home-maintenance/how-to-clean-house-fast/">
+                                    <NavDropdown.Item href="https://blog.nationwide.com/home/home-maintenance/how-to-clean-house-fast/" target="_blank">
                                         Blog
                                     </NavDropdown.Item>
-                                    <NavDropdown.Item href="https://www.goodhousekeeping.com/home/cleaning/g2550/best-cleaning-tips/">
+                                    <NavDropdown.Item href="https://www.goodhousekeeping.com/home/cleaning/g2550/best-cleaning-tips/" target="_blank">
                                         Cleaning Tips
                                     </NavDropdown.Item>
-                                    <NavDropdown.Item href="https://www.bhg.com/homekeeping/house-cleaning/tips/eco-friendly-cleaning-ideas/">
+                                    <NavDropdown.Item href="https://www.bhg.com/homekeeping/house-cleaning/tips/eco-friendly-cleaning-ideas/" target="_blank">
                                         Green Cleaning
                                     </NavDropdown.Item>
                                 </NavDropdown>
                             </Nav.Item>
                             <Nav.Item>
                                 <NavDropdown title="Services" id="basic-nav-dropdown">
-
                                     <NavDropdown.Item>
                                         <Link style={{ textDecoration: "none" }} href="/service">All Service </Link>
                                     </NavDropdown.Item>
@@ -80,8 +78,8 @@ const Header = () => {
                                     <Nav.Item >
                                         <NavDropdown title={`Hi, ${userInfo.firstName}`} id="basic-nav-dropdown">
                                             {userInfo.role === "customer" && (<>
-                                             <NavDropdown.Item>
-                                                <Link style={{ textDecoration: "none" }} href="/customer/userHome"> Home Page </Link></NavDropdown.Item>
+                                                <NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/customer/userHome"> Home Page </Link></NavDropdown.Item>
                                                 <NavDropdown.Item>
                                                     <Link style={{ textDecoration: "none" }} href="/customer/residenceAddress">Address</Link></NavDropdown.Item>
                                                 <NavDropdown.Item>
@@ -92,9 +90,11 @@ const Header = () => {
                                                 <NavDropdown.Item>
                                                     <Link style={{ textDecoration: "none" }} href="/customer/residence">Residence</Link></NavDropdown.Item>
                                             </>)}
-                                            {userInfo.role !== "customer" &&(
+                                            {userInfo.role !== "customer" && (
+                                                <NavDropdown.Item>
+                                                    <Link style={{ textDecoration: "none" }} href="/employee/userHome"> Home Page </Link></NavDropdown.Item>)}
                                             <NavDropdown.Item>
-                                                <Link style={{ textDecoration: "none" }} href="/employee/userHome"> Home Page </Link></NavDropdown.Item>)}
+                                                <Link style={{ textDecoration: "none" }} href="/password"> Change Password </Link></NavDropdown.Item>
                                             <NavDropdown.Item onClick={logout}> Logout</NavDropdown.Item>
 
                                         </NavDropdown>
@@ -107,13 +107,12 @@ const Header = () => {
                     {userInfo.role === "customer" || !isAuthenticated() && (
                         <Nav.Item>
                             <Container className="d-grid gap-1">
-                                <Link style={{ textDecoration: "none" }} href="/residence">
+                                <Link style={{ textDecoration: "none" }} href="/customer/residence">
                                     <Button className="btn btn-outline-success" >Get a free quote here</Button>
                                 </Link>
                             </Container>
                         </Nav.Item>
                     )}
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 </Nav >
             </Navbar >
         </>

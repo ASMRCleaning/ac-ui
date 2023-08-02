@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Button, Pagination, Modal } from "react-bootstrap";
+import { Row, Col, Button, Pagination, Modal, Alert } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getBookingById, updateVisitServiceByBookingId } from "../../lib/booking";
@@ -18,9 +18,9 @@ const VisitService = () => {
     const [visitService, setVisitService] = useState([]);
     const [bookingInfo, setBookingInfo] = useAtom(bookingInfoAtom);
     const [employeeUser, setEmployeeUser] = useState(null);
-    const today = new Date();
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     //if get a huge list of visits divide in page with 5 items
     const totalPages = Math.ceil(visitService.length / itemPerPage);
@@ -89,6 +89,7 @@ const VisitService = () => {
             setShowModal(true);
 
         } catch (err) {
+            setErrorMessage("Something went wrong while update visits. Please try again later.");
             console.error(`Error to update visit status:`, err);
         }
     }
@@ -109,6 +110,7 @@ const VisitService = () => {
                     </Link>
                 </Col>
             </Row>
+            {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
             <br />
             <br />
             <Row>

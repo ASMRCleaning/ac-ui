@@ -8,22 +8,16 @@ import { residenceInfoAtom } from "../../store";
 import { useForm } from 'react-hook-form';
 
 const Residence = () => {
-    //get the session 
-    const source = sessionStorage.getItem("source");
-
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
-
-    //global variable defined in store.js
-    const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
-
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
     const [hasResidence, setHasResidence] = useState(false);
-
     const router = useRouter();
-    
-    //get where login page comes from
-    // const source = sessionStorage.getItem('source');
+    const source = sessionStorage.getItem("source"); //get the session 
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    //global variable defined in store.js
+    const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
 
     useEffect(() => {
         //retrieve residence information when the component mounts
@@ -101,7 +95,10 @@ const Residence = () => {
                 await registerResidence(updateResidenceInfo);
                 router.push('/booking/create-booking');
 
-            } catch (err) { console.log(err); }
+            } catch (err) { 
+                setErrorMessage("Something went wrong while add the residence. Please try again later.");
+                console.error("Error when adding residence: ", err); 
+            }
         }
         //update existing data 
         else {
@@ -114,10 +111,11 @@ const Residence = () => {
                 setShowModal(true);
 
             } 
-            catch (err) { console.log(err); }
+            catch (err) { 
+                setErrorMessage("Something went wrong while update the residence. Please try again later.");
+                console.error("Error when updating the residence: ", err); }
         }
     }
-
     return (
         <>
             <Container className="flex">
@@ -155,6 +153,7 @@ const Residence = () => {
                             <Row>
                                  <p style={{ fontWeight: 'bold', fontSize: '2rem', textAlign: "center" }}>  Residence Address </p>
                             </Row> 
+                            {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
                         <br />
                         <Form onSubmit={handleSubmit(submitForm)} className="container mt-3 mb-3">
                             <Row className="mb-6">
@@ -164,12 +163,9 @@ const Residence = () => {
                                         type="text"
                                         id="streetAddress"
                                         name="streetAddress"
-                                        // value={residenceInfo.address?.streetAddress}
                                         placeholder="1111, Street Name" />
                                     <br />
                                     {errors.streetAddress?.type === "required" && (<Alert variant="danger">Street Address is required</Alert>)}
-                                    {/* {errors.streetAddress?.type === "minLength" && (<Alert variant="danger">Street Address must be more than 5 charater </Alert>)}
-                            {errors.streetAddress?.type === "maxLength" && (<Alert variant="danger">Street Address must be less than 150 charater</Alert>)} */}
                                 </Form.Group>
                                 <Form.Group className="col col-sm-3">
                                     <Form.Label>Apartment, unit, suite, etc</Form.Label>
@@ -177,7 +173,6 @@ const Residence = () => {
                                         type="text"
                                         id="unit"
                                         name="unit"
-                                        // value={residenceInfo.address?.unit}
                                         placeholder="2023" />
                                     <br />
                                     {errors.unit?.type === "minLength" && (<Alert variant="danger">Unit must be more than 5 charater </Alert>)}
@@ -192,7 +187,6 @@ const Residence = () => {
                                         type="text"
                                         id="postalCode"
                                         name="postalCode"
-                                        // value={residenceInfo.address?.postalCode}
                                         placeholder="A0B-1C7" />
                                     <br />
                                     {errors.postalCode?.type === "pattern" && (<Alert variant="danger">Postal Code is not correct </Alert>)}
@@ -204,7 +198,6 @@ const Residence = () => {
                                         type="text"
                                         id="city"
                                         name="city"
-                                        // value={residenceInfo.address?.city}
                                         placeholder="Toronto" />
                                     <br />
                                     {errors.city?.type === "required" && (<Alert variant="danger">City is required</Alert>)}
@@ -244,7 +237,6 @@ const Residence = () => {
                                 <Col className="col col-sm-3">
                                     <Button variant="primary"
                                         className="btn btn-outline-info"
-                                        // type="submit"
                                         onClick={handleRedirect}
                                         style={{ padding: "15px", margin: "1px", width: "50%" }}> Back</Button>
                                 </Col>
@@ -273,7 +265,6 @@ const Residence = () => {
                         <Modal.Title>Residence Updated</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {/* update residence information */}
                         {resModal && resModal.status === "ok" ? (<p>Your residence information has been successfully updated.</p>)
                             : (<p>Something wrong happened, please try again later</p>)
                         }

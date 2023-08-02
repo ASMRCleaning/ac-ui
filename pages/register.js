@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { isAuthenticated, registerUser } from "../lib/authenticate";
+import { registerUser } from "../lib/authenticate";
 import { Form, Row, Button, Card, Alert, Col, Modal } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { useAtom } from "jotai";
 import { userInfoAtom } from "../store";
-import Link from "next/link";
 
 const RegisterPage = () => {
     const source = sessionStorage.getItem("source"); //get the session
     const router = useRouter();
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
-    const [errorMessage, setErrorMessage] = useState(null);     // Add this at the top of the Login component
+    const [errorMessage, setErrorMessage] = useState(null);  
     const [isManager, setIsManager] = useState(false);
 
     //control form information
@@ -43,8 +42,6 @@ const RegisterPage = () => {
             router.push("/employee/employee")
         }
         else {
-            //clear the session storage value
-            sessionStorage.removeItem('source');
             router.push("/login");
         }
     }
@@ -87,7 +84,7 @@ const RegisterPage = () => {
     return (
         <>
             <Card bg="info" className="container mt-3 mb-3">
-                <Card.Body lassName="col col-sm-9">
+                <Card.Body className="col col-sm-9">
                     <h2 style={{ color: '#f0f5fa', justifyItems: "center", alignItems: "center" }}>Create an Account</h2>
                     <p style={{ color: '#f0f5fa', fontSize: "1.5rem" }}>Please fill all required field to create an account in our website</p></Card.Body>
             </Card>

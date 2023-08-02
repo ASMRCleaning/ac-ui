@@ -7,20 +7,14 @@ import { getUserInfo, updateUserInfo } from "../lib/user";
 import { useRouter } from "next/router";
 
 const Profile = () => {
-    //get the session 
-    const source = sessionStorage.getItem("source");
-
-    //control form information
+    const [showModal, setShowModal] = useState(false);
+    const [resModal, setResModal] = useState(null);
+    const router = useRouter();
+    const [errorMessage, setErrorMessage] = useState(null);
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
 
     //global variable defined in store.js
     const [userInfo, setUserInfoAtom] = useAtom(userInfoAtom);
-
-    const [showModal, setShowModal] = useState(false);
-    const [resModal, setResModal] = useState(null);
-
-
-    const router = useRouter();
 
     useEffect(() => {
         //retrieve residence information when component mounts
@@ -46,8 +40,16 @@ const Profile = () => {
     }, []);
 
     const handleRedirect = () => {
-        if (userInfo.role === "customer") { return router.push("/customer/userHome") }
-        else { return router.push("/employee/userHome") }
+        if (userInfo.role === "customer") {
+            //clear the session storage value
+            sessionStorage.removeItem('source');
+            return router.push("/customer/userHome")
+        }
+        else {
+            //clear the session storage value
+            sessionStorage.removeItem('source');
+            return router.push("/employee/userHome")
+        }
     }
 
     async function submitForm(data) {
@@ -70,7 +72,8 @@ const Profile = () => {
             setShowModal(true);
         }
         catch (err) {
-            console.log(err);
+            setErrorMessage("Something went wrong while update user. Please try again later.");
+            console.error("Error to update user: ", err);
         }
     }
 
@@ -92,6 +95,7 @@ const Profile = () => {
                                 disabled="true" />
                         </Form.Group>
                     </Row>
+                    {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
                     <br />
                     <Row className="mb-9">
                         <Form.Group className="col col-sm-9">
@@ -141,35 +145,12 @@ const Profile = () => {
                             {errors.lastName?.type === "maxLength" && (<Alert variant="danger">Phone must have maximum 100 character</Alert>)}
                         </Form.Group>
                     </Row>
-                    {/* <br />
-                    <Row className="mb-9">
-                        <Form.Group className="col col-sm-9">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control className={errors.password && "inputErrors"}{...register("password", { minLength: 5 })}
-                                type="password"
-                                id="password"
-                                name="password" />
-                            {errors.password?.type === "minLength" && (<Alert variant="danger">Password must have minimum 5 character</Alert>)}
-                        </Form.Group>
-                    </Row>
-                    <br />
-                    <Row className="mb-9">
-                        <Form.Group className="col col-sm-9">
-                            <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control className={errors.password2 && "inputErrors"}{...register("password2", { validate: (value) => value === password, })}
-                                type="password"
-                                id="password2"
-                                name="password2" />
-                            {errors.password2?.type === "validate" && (<Alert variant="danger">Password do not match</Alert>)}
-                        </Form.Group>
-                    </Row> */}
                     <br /><br />
                     <Row className="mb-3" style={{ padding: "10px" }}>
 
                         <Col>
                             <Button variant="primary"
                                 className="btn btn-outline-info"
-                                // type="submit"
                                 onClick={handleRedirect}
                                 style={{ padding: "10px", margin: "1px", width: "40%" }}> Back</Button>
                         </Col>

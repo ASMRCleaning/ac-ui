@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Modal, Image, Card } from "react-bootstrap";
+import { Row, Col, Button, Modal, Image, Card, Alert } from "react-bootstrap";
 import Link from "next/link";
 import { FcSearch } from "react-icons/fc" //icon detail 
 import { AiTwotoneDelete } from "react-icons/ai"; //icon delete
@@ -17,6 +17,7 @@ const Subscription = () => {
     const [bookingIdDel, setBookingIdDel] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [showModalD, setShowModalD] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     //global variable from store.js
     const [userInfo, setUserInfo] = useAtom(userInfoAtom);
@@ -40,6 +41,7 @@ const Subscription = () => {
                 })
             }
             catch (err) {
+                setErrorMessage("Something went wrong while load the users. Please try again later.");
                 console.error("Error fetching user information: ", err);
             }
         }
@@ -56,6 +58,7 @@ const Subscription = () => {
                 setBookings(data.bookings.filter(booking => booking.customerId === userInfo.userId));
             }
             catch (err) {
+                setErrorMessage("Something went wrong while load bookings. Please try again later.");
                 console.error("Error fetching bookings: ", err);
             }
         }
@@ -82,7 +85,9 @@ const Subscription = () => {
                 setBookings((prevBooking) => prevBooking.filter((booking) => booking._id !== bookingIdDel));
                 closeDeleteModal()
             }
-            catch (err) { console.log(err); }
+            catch (err) { 
+                setErrorMessage("Something went wrong while delete bookings. Please try again later.");
+                console.error("Error remove bookings: ", err); }
         }
 
     }
@@ -103,6 +108,7 @@ const Subscription = () => {
             router.push(`/booking/${id}`);
         }
         catch (err) {
+            setErrorMessage("Something went wrong while load the bookings[id]. Please try again later.");
             console.error("Error to fetching booking by Id: ", err);
         }
 
@@ -165,6 +171,7 @@ const Subscription = () => {
                     </table>
                 }
             </Row>
+            {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
             <Row style={{ marginTop: "70px", marginLeft: "300px" }}>
                 <Col className="col col-sm-4" style={{ paddingTop: "10px" }}>
                     <Link href="/booking/create-booking">

@@ -19,12 +19,11 @@ const UserHome = () => {
                 role: userData.user.role,
                 userId: userData.user._id
             });
-
             //get if the user logged in is a manager or not
             setIsManager(userData.user.role === "manager" ? true : false);
         }
         fetchUserLoggedIn();
-    },[]);
+    }, []);
 
     return (
         <>
@@ -108,9 +107,6 @@ const UserHome = () => {
                     </Row>
                 </Row>
                 <br />
-                {/* <Row className="flex">
-                    <Image src="/userHome-3.jpg" style={{ height: "50%", width: "110%", display: "block" }} />
-                </Row> */}
             </Container>
         </>
     )
