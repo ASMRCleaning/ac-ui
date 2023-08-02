@@ -6,7 +6,7 @@ import { getBookingById, updateVisitServiceByBookingId } from "../../lib/booking
 import { useAtom } from "jotai";
 import { bookingInfoAtom } from "../../store";
 import { getUserById } from "../../lib/user";
-import { formatBookingDate, formatDateToISO } from "../../components/CommonFunction";
+import { formatBookingDate } from "../../components/CommonFunction";
 import IconTipName from "../../components/IconTipName"; //add icon format and action
 import { FcCancel, FcOk, FcPieChart } from "react-icons/fc";
 
@@ -14,7 +14,7 @@ const VisitService = () => {
     const router = useRouter();
     const { visitServiceId } = router.query;
     const [page, setPage] = useState(1);
-    const itemPerPage = 20;
+    const itemPerPage = 15;
     const [visitService, setVisitService] = useState([]);
     const [bookingInfo, setBookingInfo] = useAtom(bookingInfoAtom);
     const [employeeUser, setEmployeeUser] = useState(null);
@@ -97,10 +97,11 @@ const VisitService = () => {
     return (
         <>
             <Row>
-                <Col className="col col-sm-10" style={{ paddingTop: "10px", paddingRight: "30px" }}>
-                    <h4 style={{ paddingLeft: "300px", color: "#5b62f4" }}>Visit Services for Subscription {bookingInfo._id}</h4>
+                <Col className="col col-sm-10" style={{ paddingTop: "50px", paddingRight: "30px" }}>
+                
+                    <p style={{ fontWeight: 'bold', fontSize: '2rem', textAlign: "center" }}>  Visit Services for Subscription {bookingInfo._id}</p>
                 </Col>
-                <Col className="col col-sm-2" style={{ paddingTop: "10px" }}>
+                <Col className="col col-sm-2" style={{ paddingTop: "50px" }}>
                     <Link href="/employee/subscription">
                         <Button className="btn btn-outline-info btn-sm"
                             variant="primary"
