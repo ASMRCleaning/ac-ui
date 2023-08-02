@@ -8,7 +8,6 @@ const About = () => {
             <Container className="col-lg-12 bg-secondary">
                 <Image src="/about-us.jpg"
                     alt="About Us" style={{
-                        // alignItems: "center",
                         top: 100,
                         left: -50,
                         width: "100%",

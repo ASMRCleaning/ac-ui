@@ -1,7 +1,6 @@
 import { React, useState } from "react";
 import { Card, Button, Form, Row, Col, Image, Container } from "react-bootstrap";
 import { MdEmail } from "react-icons/md"
-import { BsTelephoneFill, BsFacebook, BsYoutube, BsInstagram  } from "react-icons/bs"
 
 const ContactUs = () => {
     const [message, setMessage] = useState();
@@ -28,8 +27,8 @@ const ContactUs = () => {
                 <a href="mailto:seneca.asmrcleaning@gmail.com"
                     className="email social">
                     <MdEmail size={20} />
+                    {" "}seneca.asmrcleaning@gmail.com
                 </a>
-                < a href="mailto:seneca.asmrcleaning@gmail.com" >seneca.asmrcleaning@gmail.com</a>
                 <br />
                 <br />
             </Card.Body>
@@ -41,8 +40,8 @@ const ContactUs = () => {
                 <a href="mailto:seneca.asmrcleaning@gmail.com"
                     className="email social">
                     <MdEmail size={20} />
-                </a>
-                < a href="mailto:seneca.asmrcleaning@gmail.com" >seneca.asmrcleaning@gmail.com</a>
+                    {" "}seneca.asmrcleaning@gmail.com
+                </a> 
                 <br />
                 <br /><br />
             </Card.Body>

@@ -1,33 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Modal } from "react-bootstrap";
+import { Row, Col, Button, Pagination, Alert } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import IconTipName from "../../components/IconTipName";
-import { FcSearch } from 'react-icons/fc';
-import { AiTwotoneDelete } from "react-icons/ai";
 import { getUsersByRole } from "../../lib/user";
 
 const Employee = () => {
+    const [page, setPage] = useState(1);
+    const itemPerPage = 15;
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
-    const [showModalD, setShowModalD] = useState(false);
     const [employeesUser, setEmployeesUser] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const filteredEmployees = employeesUser.filter(employee => employee.firstName.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.lastName.toLocaleLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    //if get a huge list of visits divide in page with 5 items
+    const totalPages = Math.ceil(filteredEmployees.length / itemPerPage);
+
+    const startIndex = (page - 1) * itemPerPage;
+    const endIndex = startIndex + itemPerPage;
+
+    const pagesEmployees = filteredEmployees.slice(startIndex, endIndex);
 
     useEffect(() => {
         async function fetEmployeesUser() {
             try {
                 const data = await getUsersByRole("employee");
                 setEmployeesUser(data.users);
-            }catch (err) {
+            } catch (err) {
                 console.error("Error fetching employee users: ", err);
+                setErrorMessage("Something went wrong while deleting the booking. Please try again later.");
             }
         }
         fetEmployeesUser();
-    }, []);    
+    }, []);
 
     const handleSearch = e => {
         setSearchTerm(e.target.value);
@@ -45,7 +53,7 @@ const Employee = () => {
 
     return (
         <>
-            <Row>
+            <Row style={{ marginTop: "50px" }}>
                 <Col className="col col-sm-7">
                     <input
                         type="text"
@@ -77,6 +85,7 @@ const Employee = () => {
             </Row>
             <br />
             <br />
+            {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
             <Row>
                 <table className="table table-striped">
                     <thead>
@@ -89,7 +98,7 @@ const Employee = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredEmployees.map(employee => (
+                        {pagesEmployees.map(employee => (
                             <tr key={employee._id}>
                                 <td>{employee._id}</td>
                                 <td>{employee.firstName}</td>
@@ -100,6 +109,13 @@ const Employee = () => {
                         ))}
                     </tbody>
                 </table>
+                <Pagination>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <Pagination.Item key={index + 1} active={index + 1 === page} onClick={() => setPage(index + 1)}>
+                            {index + 1}
+                        </Pagination.Item>
+                    ))}
+                </Pagination>
             </Row>
             <br />
 

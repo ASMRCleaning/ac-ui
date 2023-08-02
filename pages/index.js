@@ -38,7 +38,6 @@ export default function Home() {
           <Card id="home-employees" style={{width:'25rem'}}>
               <Card.Img src="/home-employees.jpg" style={{ width: '100%' }} />
               <Card.Body>
-                {/* <Card.Header style={{ fontWeight: 'bold', fontSize: '2rem' }}>House Cleaning</Card.Header> */}
                 <Card.Text style={{fontSize: "1.5rem"}}>
                   <h3>High specialized team prepared for you</h3>
                 </Card.Text>

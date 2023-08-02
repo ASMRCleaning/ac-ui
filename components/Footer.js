@@ -6,7 +6,7 @@ const Footer = () => {
 
   return (
     <>
-      <footer style={{ display: "flex", justifyContent: "space-between" }}>
+      <footer style={{ display: "flex", justifyContent: "space-between",  zIndex: 1, }}>
         <table size="sm">
           <thead>
             <tr>
