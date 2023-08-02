@@ -11,6 +11,7 @@ const ResidenceByCustomer = () => {
     const router = useRouter();
     const { customerId } = router.query;
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
+    const [errorMessage, setErrorMessage] = useState(null);
 
     //global variable defined in store.js
     const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
@@ -126,8 +127,9 @@ const ResidenceByCustomer = () => {
             // Set hasResidence to false
             setHasResidence(false);
         }
-
-        catch (err) { console.log(err); }
+        catch (err) { 
+            setErrorMessage("Something went wrong while delete the residence. Please try again later.");
+            console.error("Error deleting residence: ", err); }
     }
 
     //update residence information
@@ -163,7 +165,10 @@ const ResidenceByCustomer = () => {
                 setResModal(res);
                 setShowModal(true);
             }
-            catch (err) { console.log(err); }
+            catch (err) { 
+                setErrorMessage("Something went wrong while add the residence. Please try again later.");
+                console.error("Error adding residence: ", err); 
+            }
         }
         else {
             try {
@@ -174,7 +179,10 @@ const ResidenceByCustomer = () => {
                 setResModal(res);
                 setShowModal(true);
             }
-            catch (err) { console.log(err); }
+            catch (err) { 
+                setErrorMessage("Something went wrong while update the residence. Please try again later.");
+                console.error("Error updating residence: ", err); 
+            }
         }
     }
 
@@ -434,6 +442,7 @@ const ResidenceByCustomer = () => {
                                         {errors.province && errors.province.type === "required" && (<Alert variant="danger">Province is required</Alert>)}
                                     </Form.Group>
                                 </Row>
+                                {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
                                 <br /><br />
                                 <Row >
                                     <br />

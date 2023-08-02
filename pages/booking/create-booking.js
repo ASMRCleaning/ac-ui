@@ -13,12 +13,6 @@ import { userInfoAtom } from "../../store"
 const CreateBooking = () => {
     const router = useRouter()
     const source = sessionStorage.getItem("source"); //get the session 
-
-    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
-
-    //global variable defined in store.js
-    const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
     const [employeeUsers, setEmployeeUsers] = useState([]);
@@ -27,6 +21,11 @@ const CreateBooking = () => {
     const [hasResidence, setHasResidence] = useState(true);
     const [residenceId, setResidenceId] = useState();
     const [userRole, setUserRole] = useState();
+    const [errorMessage, setErrorMessage] = useState(null);
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+
+    //global variable defined in store.js
+    const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
     //User logged in data, if manager it needs show list of customer and employee, if not check if customer has residence
     useEffect(() => {
@@ -64,6 +63,7 @@ const CreateBooking = () => {
                 }
             }
             catch (err) {
+                setErrorMessage("Something went wrong while load users. Please try again later.");
                 console.error("Error fetching user and residence info: ", err);
             }
         }
@@ -79,6 +79,7 @@ const CreateBooking = () => {
                 setEmployeeUsers(data.users);
             }
             catch (err) {
+                setErrorMessage("Something went wrong while load employees. Please try again later.");
                 console.error("Error fetching employee users: ", err);
             }
         }
@@ -94,6 +95,7 @@ const CreateBooking = () => {
                 setCustomerUsers(data.users);
             }
             catch (err) {
+                setErrorMessage("Something went wrong while load customers. Please try again later.");
                 console.error("Error fetching customer users: ", err);
             }
         }
@@ -146,6 +148,7 @@ const CreateBooking = () => {
 
         }
         catch (err) {
+            setErrorMessage("Something went wrong while load customer info. Please try again later.");
             console.error("Error to retrieve residence info: ", err);
         }
     }
@@ -183,12 +186,15 @@ const CreateBooking = () => {
                 setResModal(res);
                 setShowModal(true);
             }
-            //call api to store info
-            const res = await registerBooking(updateBookingInfo);
+            else {
+                //call api to store info
+                const res = await registerBooking(updateBookingInfo);
 
-            //show modal with update result
-            setResModal(res);
-            setShowModal(true);
+                //show modal with update result
+                setResModal(res);
+                setShowModal(true);
+            }
+
             setValue("customerId", "");
             setValue("startDate", "");
             setValue("endDate", "");
@@ -197,7 +203,9 @@ const CreateBooking = () => {
             setValue("employeeId", "");
             setValue("specification", "");
 
-        } catch (err) { console.log(err); }
+        } catch (err) { 
+            setErrorMessage("Something went wrong while add booking. Please try again later.");
+            console.error("Error add booking: ", err); }
     }
 
     return (
@@ -208,6 +216,7 @@ const CreateBooking = () => {
                     <p style={{ fontWeight: "bold", fontSize: "2rem", textAlign: "center" }}>  Register a booking  </p>
 
                 </Row>
+                {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
                 <br />
                 <br />
                 <Form onSubmit={handleSubmit(submitForm)} className="container mt-3 mb-3">

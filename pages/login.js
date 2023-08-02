@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Alert, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Alert, Button, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { authenticateUser } from "../lib/authenticate";
 import { getUserInfo } from "../lib/user";
@@ -8,18 +8,13 @@ import { useAtom } from "jotai";
 import { userInfoAtom } from "../store";
 
 export default function Login() {
+  const [errorMessage, setErrorMessage] = useState(null);
+  const router = useRouter();
   const source = sessionStorage.getItem("source"); //get the session 
-
-  //control form information
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   //global variable to store customer information and get userName
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-
-  // Add this at the top of the Login component
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  const router = useRouter();
 
   //login user
   async function submitForm(data) {
@@ -105,7 +100,6 @@ export default function Login() {
         </Row>
       </Form>
       {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
-      <br /> <br /> <br /> <br /> <br /> <br /> <br /><br /><br />
     </>
   );
 }

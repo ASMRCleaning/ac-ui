@@ -9,17 +9,16 @@ import { getResidence, removeResidence, updateResidence } from "../../lib/reside
 const Residence = () => {
     //control form information
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
-
-    //global variable defined in store.js
-    const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
-    const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
     const [showModalD, setShowModalD] = useState(false);
     const [hasResidence, setHasResidence] = useState(false);
-
     const router = useRouter();
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    //global variable defined in store.js
+    const [residenceInfo, setResidenceInfo] = useAtom(residenceInfoAtom);
+    const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
     useEffect(() => {
         //retrieve residence information when component mounts
@@ -97,7 +96,9 @@ const Residence = () => {
             setHasResidence(false);
         }
 
-        catch (err) { console.log(err); }
+        catch (err) { 
+            setErrorMessage("Something went wrong while delete residence. Please try again later.");
+            }
     }
 
     //update residence information
@@ -128,10 +129,11 @@ const Residence = () => {
                 setResModal(res);
                 setShowModal(true);
             }
-            catch (err) { console.log(err); }
+            catch (err) { 
+                setErrorMessage("Something went wrong while update residence. Please try again later.");
+             }
         }
     }
-
     return (
         <>
             <Container className="flex">
@@ -148,6 +150,7 @@ const Residence = () => {
                     <Col className="col col-sm-3" style={{ paddingTop: "40px" }}>
                         <Image src="/residence_1.jpg" style={{ height: "85%", width: "130%" }} />
                     </Col>
+                    {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
                     <Col className="col col-sm-9" style={{ paddingLeft: "100px" }}>
                         <Form onSubmit={handleSubmit(submitForm)} className="container mt-3 mb-3">
                             <Row className="mb-6">

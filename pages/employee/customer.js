@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button, Pagination, Alert } from "react-bootstrap";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import IconTipName from "../../components/IconTipName";
@@ -10,14 +10,25 @@ import { useAtom } from "jotai";
 import { viewInfoAtom } from "../../store";
 
 const Customer = () => {
+    const [page, setPage] = useState(1);
+    const itemPerPage = 15;
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [customersUser, setCustomersUser] = useState([]);
     const [viewInfo, setViewInfo] = useAtom(viewInfoAtom);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const filteredCustomers = customersUser.filter(customer => customer.firstName.toLocaleLowerCase().includes(searchTerm.toLowerCase()) ||
         customer.lastName.toLocaleLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    //if get a huge list of visits divide in page with 5 items
+    const totalPages = Math.ceil(filteredCustomers.length / itemPerPage);
+
+    const startIndex = (page - 1) * itemPerPage;
+    const endIndex = startIndex + itemPerPage;
+
+    const pagesCustomers = filteredCustomers.slice(startIndex, endIndex);
 
     useEffect(() => {
         async function fetCustomersUser() {
@@ -26,6 +37,7 @@ const Customer = () => {
                 setCustomersUser(data.users);
             }
             catch (err) {
+                setErrorMessage("Something went wrong while load the customer users. Please try again later.");
                 console.error("Error fetching customer users: ", err);
             }
         }
@@ -48,12 +60,13 @@ const Customer = () => {
             router.push(`/employee/${customerId}`);
         }
         catch (err) {
+            setErrorMessage("Something went wrong while redirect to customer information. Please try again later.");
             console.error("Error to redirect to residence page: ", err);
         }
     }
     return (
         <>
-            <Row>
+            <Row style={{marginTop: "50px"}}>
                 <Col className="col col-sm-7">
                     <input
                         type="text"
@@ -85,6 +98,7 @@ const Customer = () => {
             </Row>
             <br />
             <br />
+            {errorMessage && <Alert className="col col-sm-6" style={{ marginLeft: '350px' }} variant="danger">{errorMessage}</Alert>}
             <Row>
                 <table className="table table-striped">
                     <thead>
@@ -99,7 +113,7 @@ const Customer = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredCustomers.map(customer => (
+                        {pagesCustomers.map(customer => (
                             <tr key={customer._id}>
                                 <td>{customer._id}</td>
                                 <td>{customer.firstName}</td>
@@ -116,6 +130,13 @@ const Customer = () => {
                         ))}
                     </tbody>
                 </table>
+                <Pagination>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <Pagination.Item key={index + 1} active={index + 1 === page} onClick={() => setPage(index + 1)}>
+                            {index + 1}
+                        </Pagination.Item>
+                    ))}
+                </Pagination>
             </Row>
             <br />
         </>
