@@ -86,13 +86,13 @@ const Header = () => {
                                                     <Link style={{ textDecoration: "none" }} href="/customer/booking"> Booking</Link>
                                                 </NavDropdown.Item>
                                                 <NavDropdown.Item>
-                                                    <Link style={{ textDecoration: "none" }} href="/profile"> Profile </Link></NavDropdown.Item>
-                                                <NavDropdown.Item>
                                                     <Link style={{ textDecoration: "none" }} href="/customer/residence">Residence</Link></NavDropdown.Item>
                                             </>)}
                                             {userInfo.role !== "customer" && (
                                                 <NavDropdown.Item>
                                                     <Link style={{ textDecoration: "none" }} href="/employee/userHome"> Home Page </Link></NavDropdown.Item>)}
+                                            <NavDropdown.Item>
+                                                <Link style={{ textDecoration: "none" }} href="/profile"> Profile </Link></NavDropdown.Item>
                                             <NavDropdown.Item>
                                                 <Link style={{ textDecoration: "none" }} href="/password"> Change Password </Link></NavDropdown.Item>
                                             <NavDropdown.Item onClick={logout}> Logout</NavDropdown.Item>
