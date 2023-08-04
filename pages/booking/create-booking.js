@@ -177,7 +177,7 @@ const CreateBooking = () => {
             endDate: endDate,
             specification: data.specification,
         }
-        console.log(updateBookingInfo);
+
         try {
             if (userRole === "customer") {
                 const res = await registerBookingByCustomer(updateBookingInfo);
