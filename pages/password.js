@@ -11,10 +11,11 @@ const Password = () => {
     const router = useRouter();
     const [showModal, setShowModal] = useState(false);
     const [resModal, setResModal] = useState(null);
-    const password = watch('password');
-    const password2 = watch('password2');
     const [errorMessage, setErrorMessage] = useState(null);
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
+
+    const password = watch('password');
+    const password2 = watch('password2');
 
     //global variable defined in store.js
     const [userInfo, setUserInfoAtom] = useAtom(userInfoAtom);
